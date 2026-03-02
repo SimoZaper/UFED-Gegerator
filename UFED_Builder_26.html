@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UFED Builder 26 — Rapport Forensique</title>
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    :root {
+      --navy: #1a2744; --navy-light: #243460; --navy-dark: #111b33;
+      --white: #ffffff; --gray-light: #f4f6fa; --gray-mid: #e2e8f0;
+      --accent: #3b82f6; --accent-hover: #2563eb; --danger: #ef4444;
+      --warning: #f97316; --success: #22c55e;
+      --deleted-bg: #fff3e0; --deleted-text: #b45309;
+      --sidebar-w: 260px; --header-h: 60px;
+      --bg: #f4f6fa; --card-bg: #ffffff; --text: #1e293b;
+      --text-muted: #64748b; --border: #e2e8f0; --row-alt: #f8fafc;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    body.dark {
+      --bg: #0f172a; --card-bg: #1e293b; --text: #e2e8f0;
+      --text-muted: #94a3b8; --border: #334155; --gray-light: #1e293b;
+      --gray-mid: #334155; --row-alt: #162032;
+      --shadow: 0 2px 8px rgba(0,0,0,0.4);
+      --deleted-bg: #431407; --deleted-text: #fb923c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; min-height: 100vh; }
+    #app-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: var(--navy); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .header-logo { display: flex; align-items: center; gap: 12px; color: #fff; font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
+    .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 900; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .btn-icon { background: rgba(255,255,255,0.1); border: none; color: #fff; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: background 0.2s; }
+    .btn-icon:hover { background: rgba(255,255,255,0.2); }
+    .global-search { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border-radius: 8px; padding: 0 12px; height: 36px; }
+    .global-search input { background: transparent; border: none; color: #fff; font-size: 0.9rem; width: 220px; outline: none; }
+    .global-search input::placeholder { color: rgba(255,255,255,0.5); }
+    #sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; width: var(--sidebar-w); background: var(--card-bg); border-right: 1px solid var(--border); overflow-y: auto; z-index: 900; transition: background 0.3s; }
+    .sidebar-section { padding: 16px 12px 8px; }
+    .sidebar-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; padding: 0 8px 8px; }
+    .nav-item { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border-radius: 8px; cursor: pointer; font-size: 0.88rem; color: var(--text); transition: background 0.15s; margin-bottom: 2px; user-select: none; }
+    .nav-item:hover { background: var(--gray-mid); }
+    .nav-item.active { background: var(--navy); color: #fff; }
+    .nav-icon { margin-right: 8px; }
+    .nav-badge { background: var(--accent); color: #fff; font-size: 0.72rem; font-weight: 700; padding: 1px 7px; border-radius: 20px; min-width: 22px; text-align: center; }
+    .nav-item.active .nav-badge { background: rgba(255,255,255,0.25); }
+    .sidebar-actions { padding: 12px; border-top: 1px solid var(--border); }
+    .btn-sm { display: flex; align-items: center; gap: 6px; width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 0.83rem; cursor: pointer; transition: background 0.15s; margin-bottom: 6px; justify-content: center; }
+    .btn-sm:hover { background: var(--gray-mid); }
+    .btn-sm.primary { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .btn-sm.primary:hover { background: var(--navy-light); }
+    .btn-sm.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+    #main-content { margin-left: var(--sidebar-w); margin-top: var(--header-h); padding: 24px; min-height: calc(100vh - var(--header-h)); }
+    #drop-zone { border: 2px dashed var(--border); border-radius: 16px; padding: 48px 24px; text-align: center; background: var(--card-bg); margin-bottom: 24px; cursor: pointer; transition: all 0.2s; }
+    #drop-zone.drag-over { border-color: var(--accent); background: rgba(59,130,246,0.05); }
+    #drop-zone.hidden { display: none; }
+    .drop-icon { font-size: 3rem; margin-bottom: 12px; }
+    .drop-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    .drop-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px; }
+    .btn-browse { background: var(--navy); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    #progress-bar-wrap { background: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 24px; display: none; }
+    #progress-bar-wrap.visible { display: block; }
+    .progress-label { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 8px; }
+    .progress-track { background: var(--gray-mid); border-radius: 99px; height: 8px; overflow: hidden; }
+    .progress-fill { background: var(--accent); height: 100%; border-radius: 99px; transition: width 0.3s; width: 0%; }
+    #stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border); }
+    .stat-icon { font-size: 1.8rem; margin-bottom: 6px; }
+    .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--navy); }
+    body.dark .stat-value { color: var(--accent); }
+    .stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+    .data-section { display: none; }
+    .data-section.active { display: block; }
+    .section-card { background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 20px; border: 1px solid var(--border); overflow: hidden; }
+    .section-card-header { background: var(--navy); color: #fff; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .section-card-title { font-size: 1rem; font-weight: 700; }
+    .section-card-body { overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .data-table thead th { background: var(--navy); color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; white-space: nowrap; }
+    .data-table tbody tr { border-bottom: 1px solid var(--border); }
+    .data-table tbody tr:nth-child(even) { background: var(--row-alt); }
+    .data-table tbody tr:hover { background: rgba(59,130,246,0.05); }
+    .data-table tbody td { padding: 9px 14px; vertical-align: top; }
+    .data-table tbody tr.deleted-row { background: var(--deleted-bg) !important; }
+    .data-table tbody tr.deleted-row td { color: var(--deleted-text); }
+    .deleted-badge { background: var(--warning); color: #fff; font-size: 0.7rem; padding: 1px 6px; border-radius: 4px; font-weight: 700; }
+    .empty-state { padding: 40px; text-align: center; color: var(--text-muted); }
+    .info-row { display: flex; padding: 10px 20px; border-bottom: 1px solid var(--border); }
+    .info-row:nth-child(even) { background: var(--row-alt); }
+    .info-label { font-weight: 600; color: var(--text-muted); width: 220px; flex-shrink: 0; font-size: 0.85rem; }
+    .info-value { font-size: 0.85rem; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.visible { display: flex; }
+    .modal-box { background: var(--card-bg); border-radius: 16px; width: 640px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+    .modal-header { background: var(--navy); color: #fff; padding: 18px 24px; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center; }
+    .modal-title { font-size: 1.05rem; font-weight: 700; }
+    .modal-close { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+    .modal-body { padding: 24px; }
+    .form-row { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 0.83rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    .form-input { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 0.88rem; outline: none; }
+    .form-input:focus { border-color: var(--accent); }
+    textarea.form-input { resize: vertical; min-height: 80px; }
+    .form-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .section-checks { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-top: 8px; }
+    .check-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; background: var(--gray-light); border: 1px solid var(--border); cursor: pointer; font-size: 0.85rem; }
+    .check-item input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--navy); }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+    .btn { padding: 9px 20px; border-radius: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer; border: none; transition: background 0.2s; }
+    .btn-cancel { background: var(--gray-mid); color: var(--text); }
+    .btn-generate { background: var(--navy); color: #fff; }
+    #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 3000; display: flex; flex-direction: column; gap: 8px; }
+    .toast { background: var(--navy); color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 0.88rem; box-shadow: var(--shadow); animation: slideIn 0.3s ease; max-width: 320px; }
+    .toast.success { background: #166534; }
+    .toast.error { background: #991b1b; }
+    .toast.warning { background: #92400e; }
+    @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: var(--gray-mid); border-radius: 3px; }
+    mark { background: #fef08a; color: #1e293b; border-radius: 2px; padding: 0 2px; }
+    body.dark mark { background: #713f12; color: #fef9c3; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+    .badge-incoming { background: #dcfce7; color: #166534; }
+    .badge-outgoing { background: #dbeafe; color: #1e40af; }
+    .badge-missed { background: #fee2e2; color: #991b1b; }
+    .badge-read { background: #f0fdf4; color: #166534; }
+    .badge-unread { background: #fffbeb; color: #92400e; }
+    body.dark .badge-incoming { background: #14532d; color: #86efac; }
+    body.dark .badge-outgoing { background: #1e3a5f; color: #93c5fd; }
+    body.dark .badge-missed { background: #450a0a; color: #fca5a5; }
+  </style>
+</head>
+<body>
+
+<header id="app-header">
+  <div class="header-logo">
+    <div class="logo-icon">UB</div>
+    <span>UFED Builder</span>
+  </div>
+  <div class="header-right">
+    <div class="global-search">
+      <span>&#128269;</span>
+      <input type="text" id="global-search-input" placeholder="Recherche globale…" oninput="globalSearch(this.value)">
+    </div>
+    <button class="btn-icon" onclick="toggleDarkMode()" id="dark-toggle">&#127769;</button>
+  </div>
+</header>
+
+<aside id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Navigation</div>
+    <div class="nav-item active" onclick="showSection('dashboard')" id="nav-dashboard"><span><span class="nav-icon">&#127968;</span>Tableau de bord</span></div>
+    <div class="nav-item" onclick="showSection('extraction')" id="nav-extraction"><span><span class="nav-icon">&#128203;</span>Infos extraction</span><span class="nav-badge" id="badge-extraction">—</span></div>
+    <div class="nav-item" onclick="showSection('contacts')" id="nav-contacts"><span><span class="nav-icon">&#128100;</span>Contacts</span><span class="nav-badge" id="badge-contacts">0</span></div>
+    <div class="nav-item" onclick="showSection('calls')" id="nav-calls"><span><span class="nav-icon">&#128222;</span>Journal d&apos;appels</span><span class="nav-badge" id="badge-calls">0</span></div>
+    <div class="nav-item" onclick="showSection('sms')" id="nav-sms"><span><span class="nav-icon">&#128172;</span>SMS/MMS</span><span class="nav-badge" id="badge-sms">0</span></div>
+    <div class="nav-item" onclick="showSection('im')" id="nav-im"><span><span class="nav-icon">&#128241;</span>Messageries</span><span class="nav-badge" id="badge-im">0</span></div>
+    <div class="nav-item" onclick="showSection('media')" id="nav-media"><span><span class="nav-icon">&#128444;&#65039;</span>M&eacute;dias</span><span class="nav-badge" id="badge-media">0</span></div>
+    <div class="nav-item" onclick="showSection('browser')" id="nav-browser"><span><span class="nav-icon">&#127760;</span>Historique web</span><span class="nav-badge" id="badge-browser">0</span></div>
+    <div class="nav-item" onclick="showSection('emails')" id="nav-emails"><span><span class="nav-icon">&#128231;</span>Emails</span><span class="nav-badge" id="badge-emails">0</span></div>
+    <div class="nav-item" onclick="showSection('apps')" id="nav-apps"><span><span class="nav-icon">&#128230;</span>Applications</span><span class="nav-badge" id="badge-apps">0</span></div>
+    <div class="nav-item" onclick="showSection('deleted')" id="nav-deleted"><span><span class="nav-icon">&#128465;&#65039;</span>Donn&eacute;es supprim&eacute;es</span><span class="nav-badge" id="badge-deleted">0</span></div>
+  </div>
+  <div class="sidebar-actions">
+    <div class="sidebar-label" style="padding-bottom:8px;">Exports</div>
+    <button class="btn-sm primary" onclick="openExportModal()">&#128196; G&eacute;n&eacute;rer rapport Word</button>
+    <button class="btn-sm" onclick="exportJSON()">&#128229; Exporter JSON</button>
+    <button class="btn-sm" onclick="exportCurrentCSV()">&#128202; Exporter CSV</button>
+    <div class="sidebar-label" style="padding:12px 0 8px;">Actions</div>
+    <button class="btn-sm danger" onclick="clearData()">&#128465;&#65039; Effacer / Nouvelle analyse</button>
+  </div>
+</aside>
+
+<main id="main-content">
+  <div id="drop-zone">
+    <div class="drop-icon">&#128194;</div>
+    <div class="drop-title">D&eacute;posez votre fichier UFED ici</div>
+    <div class="drop-sub">Formats accept&eacute;s : .html, .htm, .xml, .csv</div>
+    <button class="btn-browse" onclick="document.getElementById('file-input').click()">&#128193; Parcourir&hellip;</button>
+    <input type="file" id="file-input" style="display:none" accept=".html,.htm,.xml,.csv" onchange="handleFileSelect(this.files[0])">
+  </div>
+  <div id="progress-bar-wrap">
+    <div class="progress-label" id="progress-label">Analyse en cours&hellip;</div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <div class="data-section active" id="section-dashboard">
+    <div id="stats-row">
+      <div class="stat-card"><div class="stat-icon">&#128100;</div><div class="stat-value" id="stat-contacts">0</div><div class="stat-label">Contacts</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128222;</div><div class="stat-value" id="stat-calls">0</div><div class="stat-label">Appels</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128172;</div><div class="stat-value" id="stat-sms">0</div><div class="stat-label">SMS/MMS</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128241;</div><div class="stat-value" id="stat-im">0</div><div class="stat-label">Messageries</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128444;&#65039;</div><div class="stat-value" id="stat-media">0</div><div class="stat-label">M&eacute;dias</div></div>
+      <div class="stat-card"><div class="stat-icon">&#127760;</div><div class="stat-value" id="stat-browser">0</div><div class="stat-label">Historique</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128231;</div><div class="stat-value" id="stat-emails">0</div><div class="stat-label">Emails</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128465;&#65039;</div><div class="stat-value" id="stat-deleted">0</div><div class="stat-label">Supprim&eacute;s</div></div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#128203; Bienvenue dans UFED Builder 26</span></div>
+      <div class="section-card-body" style="padding:24px;">
+        <p style="color:var(--text-muted);line-height:1.7;">Chargez un rapport UFED (HTML, XML ou CSV) via la zone de d&eacute;p&ocirc;t ci-dessus pour commencer l&apos;analyse forensique. Les donn&eacute;es extraites seront affich&eacute;es dans les diff&eacute;rentes sections du menu de navigation.</p>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-top:12px;"><strong>&#8505;&#65039;</strong> Les donn&eacute;es sont sauvegard&eacute;es automatiquement dans le localStorage de votre navigateur.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-section" id="section-extraction">
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#128203; Informations d&apos;extraction</span></div>
+      <div class="section-card-body"><div id="extraction-info-container"><div class="empty-state">Aucune donn&eacute;e disponible.</div></div></div>
+    </div>
+  </div>
+
+  <div class="data-section" id="section-contacts">
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#128100; Contacts</span><button class="btn-icon" onclick="exportSectionCSV('contacts')">&#128202;</button></div>
+      <div class="section-card-body" id="contacts-table-wrap"><div class="empty-state">Aucun contact trouv&eacute;.</div></div>
+    </div>
+  </div>
+
+  <div class="data-section" id="section-calls">
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#128222; Journal d&apos;appels</span><button class="btn-icon" onclick="exportSectionCSV('calls')">&#128202;</button></div>
+      <div class="section-card-body" id="calls-table-wrap"><div class="empty-state">Aucun appel trouv&eacute;.</div></div>
+    </div>
+  </div>
+
+  <div class="data-section" id="section-sms">
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#128172; SMS / MMS</span><button class="btn-icon" onclick="exportSectionCSV('sms')">&#128202;</button></div>
+      <div class="section-card-body" id="sms-table-wrap"><div class="empty-state">Aucun SMS trouv&eacute;.</div></div>
+    </div>
+  </div>
+
+  <div class="data-section" id="section-im">
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#128241; Messageries instantan&eacute;es</span><button class="btn-icon" onclick="exportSectionCSV('im')">&#128202;</button></div>
+      <div class="section-card-body" id="im-table-wrap"><div class="empty-state">Aucun message trouv&eacute;.</div></div>
+    </div>
+  </div>
+
+  <div class="data-section" id="section-media">
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#128444;&#65039; M&eacute;dias</span><button class="btn-icon" onclick="exportSectionCSV('media')">&#128202;</button></div>
+      <div class="section-card-body" id="media-table-wrap"><div class="empty-state">Aucun m&eacute;dia trouv&eacute;.</div></div>
+    </div>
+  </div>
+
+  <div class="data-section" id="section-browser">
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#127760; Historique de navigation</span><button class="btn-icon" onclick="exportSectionCSV('browser')">&#128202;</button></div>
+      <div class="section-card-body" id="browser-table-wrap"><div class="empty-state">Aucun historique trouv&eacute;.</div></div>
+    </div>
+  </div>
+
+  <div class="data-section" id="section-emails">
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#128231; Emails</span><button class="btn-icon" onclick="exportSectionCSV('emails')">&#128202;</button></div>
+      <div class="section-card-body" id="emails-table-wrap"><div class="empty-state">Aucun email trouv&eacute;.</div></div>
+    </div>
+  </div>
+
+  <div class="data-section" id="section-apps">
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#128230; Applications install&eacute;es</span><button class="btn-icon" onclick="exportSectionCSV('apps')">&#128202;</button></div>
+      <div class="section-card-body" id="apps-table-wrap"><div class="empty-state">Aucune application trouv&eacute;e.</div></div>
+    </div>
+  </div>
+
+  <div class="data-section" id="section-deleted">
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">&#128465;&#65039; Donn&eacute;es supprim&eacute;es</span><button class="btn-icon" onclick="exportSectionCSV('deleted')">&#128202;</button></div>
+      <div class="section-card-body" id="deleted-table-wrap"><div class="empty-state">Aucune donn&eacute;e supprim&eacute;e trouv&eacute;e.</div></div>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="export-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">&#128196; G&eacute;n&eacute;rer le rapport Word</span>
+      <button class="modal-close" onclick="closeExportModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-cols">
+        <div class="form-row"><label class="form-label">Num&eacute;ro de rapport</label><input type="text" class="form-input" id="rpt-number" placeholder="ex: RPT-2024-001"></div>
+        <div class="form-row"><label class="form-label">R&eacute;f&eacute;rence judiciaire</label><input type="text" class="form-input" id="rpt-judicial" placeholder="ex: PV-2024-12345"></div>
+      </div>
+      <div class="form-cols">
+        <div class="form-row"><label class="form-label">Investigateur / Auteur</label><input type="text" class="form-input" id="rpt-author" placeholder="Nom Pr&eacute;nom"></div>
+        <div class="form-row"><label class="form-label">Unit&eacute; / Service</label><input type="text" class="form-input" id="rpt-unit" placeholder="Brigade Num&eacute;rique"></div>
+      </div>
+      <div class="form-cols">
+        <div class="form-row"><label class="form-label">Date du rapport</label><input type="date" class="form-input" id="rpt-date"></div>
+        <div class="form-row"><label class="form-label">Classification</label>
+          <select class="form-input" id="rpt-classification">
+            <option>NON CLASSIFI&Eacute;</option>
+            <option>DIFFUSION RESTREINTE</option>
+            <option>CONFIDENTIEL</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row"><label class="form-label">Objet de l&apos;enqu&ecirc;te</label><textarea class="form-input" id="rpt-subject" placeholder="D&eacute;crivez bri&egrave;vement l&apos;objet&hellip;"></textarea></div>
+      <div class="form-row">
+        <label class="form-label">Sections &agrave; inclure</label>
+        <div class="section-checks">
+          <label class="check-item"><input type="checkbox" id="chk-extraction" checked> &#128203; Infos extraction</label>
+          <label class="check-item"><input type="checkbox" id="chk-contacts" checked> &#128100; Contacts</label>
+          <label class="check-item"><input type="checkbox" id="chk-calls" checked> &#128222; Journal d&apos;appels</label>
+          <label class="check-item"><input type="checkbox" id="chk-sms" checked> &#128172; SMS/MMS</label>
+          <label class="check-item"><input type="checkbox" id="chk-im" checked> &#128241; Messageries</label>
+          <label class="check-item"><input type="checkbox" id="chk-media" checked> &#128444;&#65039; M&eacute;dias</label>
+          <label class="check-item"><input type="checkbox" id="chk-browser" checked> &#127760; Historique web</label>
+          <label class="check-item"><input type="checkbox" id="chk-emails" checked> &#128231; Emails</label>
+          <label class="check-item"><input type="checkbox" id="chk-apps" checked> &#128230; Applications</label>
+          <label class="check-item"><input type="checkbox" id="chk-deleted" checked> &#128465;&#65039; Donn&eacute;es supprim&eacute;es</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" onclick="closeExportModal()">Annuler</button>
+      <button class="btn btn-generate" onclick="generateDocx()">&#128196; G&eacute;n&eacute;rer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+// ── Constantes ────────────────────────────────────────────────────────────────
+// Limite la recherche regex aux N premiers caractères pour éviter les problèmes de performance sur de grands documents
+const MAX_REGEX_SEARCH_LENGTH = 8000;
+// Longueur de clé utilisée pour dédupliquer les éléments supprimés déjà trouvés
+const DELETED_CONTENT_DEDUPE_LENGTH = 200;
+// Longueur maximale du champ "détails" pour les éléments supprimés récupérés
+const DELETED_DETAILS_MAX_LENGTH = 300;
+
+// ── État global ──────────────────────────────────────────────────────────────
+const AppState = {
+  currentSection: 'dashboard',
+  darkMode: false,
+  data: {
+    extraction: {},
+    contacts: [], calls: [], sms: [], im: [],
+    media: [], browser: [], emails: [], apps: [], deleted: []
+  },
+  searchQuery: ''
+};
+
+// ── Initialisation ───────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('ufed_darkmode') === '1') {
+    AppState.darkMode = true;
+    document.body.classList.add('dark');
+    document.getElementById('dark-toggle').textContent = '\u2600\uFE0F';
+  }
+  document.getElementById('rpt-date').valueAsDate = new Date();
+  setupDropZone();
+  restoreFromLocalStorage();
+});
+
+// ── Zone de dépôt ─────────────────────────────────────────────────────────────
+function setupDropZone() {
+  const zone = document.getElementById('drop-zone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0]; if (file) handleFileSelect(file);
+  });
+  zone.addEventListener('click', e => {
+    if (e.target.tagName !== 'BUTTON') document.getElementById('file-input').click();
+  });
+}
+
+// ── Chargement de fichier ─────────────────────────────────────────────────────
+function handleFileSelect(file) {
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!['html','htm','xml','csv'].includes(ext)) { showToast('Format non support\u00e9', 'error'); return; }
+  showToast('Chargement : ' + file.name);
+  setProgress(5, 'Lecture du fichier\u2026');
+  const reader = new FileReader();
+  reader.onload = e => {
+    const content = e.target.result;
+    if (ext === 'csv') parseCSVFile(content);
+    else if (ext === 'xml') parseXMLFile(content);
+    else parseUFEDReport(content);
+  };
+  reader.onerror = () => showToast('Erreur de lecture : ' + (reader.error ? reader.error.message : 'inconnue'), 'error');
+  reader.readAsText(file, 'UTF-8');
+}
+
+// ── Barre de progression ──────────────────────────────────────────────────────
+function setProgress(pct, label) {
+  const wrap = document.getElementById('progress-bar-wrap');
+  wrap.classList.add('visible');
+  document.getElementById('progress-fill').style.width = pct + '%';
+  if (label) document.getElementById('progress-label').textContent = label;
+}
+function hideProgress() { setTimeout(() => document.getElementById('progress-bar-wrap').classList.remove('visible'), 600); }
+
+// ── Parsing HTML UFED ─────────────────────────────────────────────────────────
+function parseUFEDReport(html) {
+  try {
+    setProgress(15, 'Analyse du HTML\u2026');
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    setProgress(30, 'Extraction infos\u2026'); AppState.data.extraction = extractExtractionInfo(doc);
+    setProgress(40, 'Contacts\u2026');         AppState.data.contacts   = extractSection(doc, ['contact','carnet','address book','phonebook'], buildContact);
+    setProgress(50, 'Appels\u2026');           AppState.data.calls      = extractSection(doc, ['call log','journal d\u0027appel','appel','call'], buildCall);
+    setProgress(58, 'SMS\u2026');              AppState.data.sms        = extractSection(doc, ['sms','mms','message','texto'], buildSMS);
+    setProgress(65, 'Messageries\u2026');      AppState.data.im         = extractSection(doc, ['whatsapp','telegram','signal','instant message','chat','messenger','viber'], buildIM);
+    setProgress(72, 'M\u00e9dias\u2026');     AppState.data.media      = extractSection(doc, ['photo','video','audio','image','media'], buildMedia);
+    setProgress(78, 'Navigation\u2026');       AppState.data.browser    = extractSection(doc, ['browser','url','web history','historique'], buildBrowser);
+    setProgress(83, 'Emails\u2026');           AppState.data.emails     = extractSection(doc, ['email','e-mail','mail','courriel'], buildEmail);
+    setProgress(88, 'Applications\u2026');     AppState.data.apps       = extractSection(doc, ['installed app','application','package','apk'], buildApp);
+    setProgress(93, 'Supprim\u00e9s\u2026'); AppState.data.deleted    = extractDeleted(doc);
+    setProgress(100, 'Termin\u00e9 !');
+    hideProgress();
+    document.getElementById('drop-zone').classList.add('hidden');
+    updateAllCounters(); renderAllSections(); saveToLocalStorage();
+    showSection('dashboard'); showToast('Analyse termin\u00e9e !', 'success');
+  } catch(err) {
+    hideProgress(); console.error(err); showToast('Erreur : ' + err.message, 'error');
+  }
+}
+
+// ── Extraction des informations d'extraction ──────────────────────────────────
+function extractExtractionInfo(doc) {
+  const info = {};
+  doc.querySelectorAll('table').forEach(tbl => {
+    tbl.querySelectorAll('tr').forEach(row => {
+      const cells = row.querySelectorAll('td,th');
+      if (cells.length >= 2) mapExtractionKey(info, cells[0].textContent.trim(), cells[1].textContent.trim());
+    });
+  });
+  doc.querySelectorAll('dl').forEach(dl => {
+    const dts = dl.querySelectorAll('dt'), dds = dl.querySelectorAll('dd');
+    dts.forEach((dt,i) => { if (dds[i]) mapExtractionKey(info, dt.textContent.trim(), dds[i].textContent.trim()); });
+  });
+  const bodyHtml = (doc.body ? doc.body.innerText : '').slice(0, MAX_REGEX_SEARCH_LENGTH);
+  const re = /([A-Za-z\u00C0-\u00FF\s\/\-]+)\s*[::\uFF1A]\s*([^\n]{1,200})/g;
+  let m;
+  while ((m = re.exec(bodyHtml)) !== null) mapExtractionKey(info, m[1].trim(), m[2].trim());
+  const defaults = ['caseNumber','extractionDate','extractionType','deviceBrand','deviceModel','deviceOS','deviceOSVersion','imei','phoneNumber','examiner','ufedVersion','md5','sha256'];
+  defaults.forEach(k => { if (!info[k]) info[k] = 'N/A'; });
+  return info;
+}
+function mapExtractionKey(info, rawKey, val) {
+  if (!val || !rawKey) return;
+  const k = rawKey.toLowerCase();
+  if (k.includes('case') || k.includes('dossier') || k.includes('affaire')) info.caseNumber = val;
+  else if (k.includes('extraction') && (k.includes('date') || k.includes('heure'))) info.extractionDate = val;
+  else if (k.includes('extraction') && k.includes('type')) info.extractionType = val;
+  else if (k.includes('brand') || k.includes('marque') || k.includes('fabricant')) info.deviceBrand = val;
+  else if (k.includes('model') || k.includes('mod\u00e8le') || k.includes('device name')) info.deviceModel = val;
+  else if ((k.includes('operating system') || k.includes('os') || k.includes('syst\u00e8me')) && !k.includes('version')) info.deviceOS = val;
+  else if (k.includes('os version') || k.includes('version os') || k.includes('os ver')) info.deviceOSVersion = val;
+  else if (k.includes('imei')) info.imei = val;
+  else if (k.includes('phone number') || k.includes('num\u00e9ro') || k.includes('msisdn')) info.phoneNumber = val;
+  else if (k.includes('examiner') || k.includes('investigateur') || k.includes('analyste') || k.includes('operator')) info.examiner = val;
+  else if (k.includes('ufed') && k.includes('version')) info.ufedVersion = val;
+  else if (k.includes('md5')) info.md5 = val;
+  else if (k.includes('sha256') || k.includes('sha-256')) info.sha256 = val;
+  else if (k.includes('sha1') || k.includes('sha-1')) info.sha1 = val;
+}
+
+// ── Extraction générique d'une section ────────────────────────────────────────
+function extractSection(doc, keywords, builder) {
+  const results = [];
+  doc.querySelectorAll('table').forEach(tbl => {
+    const txt = tbl.textContent.toLowerCase();
+    if (!keywords.some(kw => txt.includes(kw))) return;
+    tbl.querySelectorAll('tr').forEach(row => {
+      if (row.querySelectorAll('th').length > 0 || row.parentElement.tagName === 'THEAD') return;
+      const cells = Array.from(row.querySelectorAll('td'));
+      if (cells.length >= 2) {
+        const item = builder(cells, row);
+        if (item) results.push(item);
+      }
+    });
+  });
+  return results;
+}
+function getCT(cells, i) { return cells[i] ? cells[i].textContent.trim().replace(/\s+/g,' ') : ''; }
+  // Vérifier les attributs de classe/style en priorité avant d'analyser le contenu textuel
+  function isDelRow(row) {
+    const cls = (row.className||'').toLowerCase(), style = (row.getAttribute('style')||'').toLowerCase();
+    if (cls.includes('delete')||cls.includes('recover')||cls.includes('carved')) return true;
+    if (style.includes('line-through')||style.includes('color: red')||style.includes('color:red')) return true;
+    if (row.getAttribute('data-deleted')==='true') return true;
+    // Vérification textuelle en dernier recours (coûteuse)
+    const firstCell = row.querySelector('td');
+    return !!(firstCell && firstCell.textContent.toLowerCase().includes('(deleted)'));
+  }
+function buildContact(cells, row) { return {name:getCT(cells,0),phone:getCT(cells,1),email:getCT(cells,2),created:getCT(cells,3),modified:getCT(cells,4),source:getCT(cells,5),deleted:isDelRow(row)}; }
+function buildCall(cells, row) {
+  const t = getCT(cells,1).toLowerCase();
+  const type = t.includes('entrant')||t.includes('incoming')||t.includes('received') ? 'incoming' :
+               t.includes('sortant')||t.includes('outgoing')||t.includes('dialed') ? 'outgoing' :
+               t.includes('manqu\u00e9')||t.includes('missed') ? 'missed' : getCT(cells,1)||'unknown';
+  return {datetime:getCT(cells,0),type,duration:getCT(cells,2),contact:getCT(cells,3),number:getCT(cells,4),source:getCT(cells,5),deleted:isDelRow(row)};
+}
+function buildSMS(cells, row) { return {sender:getCT(cells,0),recipient:getCT(cells,1),content:getCT(cells,2),timestamp:getCT(cells,3),status:getCT(cells,4),type:getCT(cells,5)||'SMS',deleted:isDelRow(row)}; }
+function buildIM(cells, row) { return {app:getCT(cells,0),participants:getCT(cells,1),sender:getCT(cells,2),content:getCT(cells,3),timestamp:getCT(cells,4),type:getCT(cells,5),deleted:isDelRow(row)}; }
+function buildMedia(cells, row) { return {filename:getCT(cells,0),date:getCT(cells,1),size:getCT(cells,2),path:getCT(cells,3),gps:getCT(cells,4),type:getCT(cells,5),deleted:isDelRow(row)}; }
+function buildBrowser(cells, row) { return {url:getCT(cells,0),title:getCT(cells,1),visitDate:getCT(cells,2),visits:getCT(cells,3),browser:getCT(cells,4),deleted:isDelRow(row)}; }
+function buildEmail(cells, row) { return {sender:getCT(cells,0),recipient:getCT(cells,1),subject:getCT(cells,2),date:getCT(cells,3),summary:getCT(cells,4),folder:getCT(cells,5),deleted:isDelRow(row)}; }
+function buildApp(cells, row) { return {name:getCT(cells,0),version:getCT(cells,1),installDate:getCT(cells,2),package:getCT(cells,3),source:getCT(cells,4),deleted:isDelRow(row)}; }
+
+function extractDeleted(doc) {
+  const results = [];
+  doc.querySelectorAll('tr').forEach(row => {
+    if (isDelRow(row)) {
+      const cells = Array.from(row.querySelectorAll('td'));
+      if (cells.length >= 2) {
+        const txt = row.textContent.toLowerCase();
+        const type = txt.includes('sms')||txt.includes('mms') ? 'SMS/MMS' :
+                     txt.includes('call')||txt.includes('appel') ? 'Appel' :
+                     txt.includes('contact') ? 'Contact' :
+                     txt.includes('photo')||txt.includes('image') ? 'Photo' :
+                     txt.includes('video') ? 'Vid\u00e9o' : 'Donn\u00e9es';
+        results.push({type,content:getCT(cells,0),date:getCT(cells,1),details:cells.map(c=>c.textContent.trim()).join(' | '),deleted:true});
+      }
+    }
+  });
+  const seenContent = new Set(results.map(r => r.content.substring(0, DELETED_CONTENT_DEDUPE_LENGTH)));
+  doc.querySelectorAll('.deleted,.recovered,[data-deleted="true"],.carved').forEach(el => {
+    const text = el.textContent.trim();
+    const key = text.substring(0, DELETED_CONTENT_DEDUPE_LENGTH);
+    if (text && !seenContent.has(key)) {
+      seenContent.add(key);
+      results.push({type:'R\u00e9cup\u00e9r\u00e9',content:key,date:'',details:text.substring(0,DELETED_DETAILS_MAX_LENGTH),deleted:true});
+    }
+  });
+  return results;
+}
+
+// ── Parsing CSV ───────────────────────────────────────────────────────────────
+function parseCSVFile(content) {
+  try {
+    setProgress(20,'Analyse CSV\u2026');
+    const result = Papa.parse(content, {header:true, skipEmptyLines:true});
+    if (result.errors.length && !result.data.length) throw new Error('CSV invalide');
+    setProgress(60,'Traitement\u2026');
+    const headers = result.meta.fields||[];
+    const hl = headers.map(h=>h.toLowerCase());
+    const data = result.data;
+    if (hl.some(h=>h.includes('phone')||h.includes('contact')||h.includes('name')||h.includes('nom'))) {
+      AppState.data.contacts = data.map(r => ({
+        name:  r[headers.find(h=>h.toLowerCase().includes('name')||h.toLowerCase().includes('nom'))]||'',
+        phone: r[headers.find(h=>h.toLowerCase().includes('phone')||h.toLowerCase().includes('tel'))]||'',
+        email: r[headers.find(h=>h.toLowerCase().includes('email')||h.toLowerCase().includes('mail'))]||'',
+        source:'CSV', deleted:false
+      }));
+    } else if (hl.some(h=>h.includes('url')||h.includes('browser'))) {
+      AppState.data.browser = data.map(r=>({url:r[headers[0]]||'',title:r[headers[1]]||'',visitDate:r[headers[2]]||'',deleted:false}));
+    } else {
+      AppState.data.contacts = data.map(r=>({name:Object.values(r)[0]||'',phone:Object.values(r)[1]||'',email:Object.values(r)[2]||'',source:'CSV',deleted:false}));
+    }
+    setProgress(100,'Termin\u00e9 !');
+    hideProgress();
+    document.getElementById('drop-zone').classList.add('hidden');
+    updateAllCounters(); renderAllSections(); saveToLocalStorage();
+    showSection('dashboard'); showToast('CSV import\u00e9 !','success');
+  } catch(err) { hideProgress(); showToast('Erreur CSV : '+err.message,'error'); }
+}
+
+// ── Parsing XML ───────────────────────────────────────────────────────────────
+function parseXMLFile(content) {
+  try {
+    setProgress(20,'Analyse XML\u2026');
+    const xmlDoc = new DOMParser().parseFromString(content,'text/xml');
+    if (xmlDoc.querySelector('parsererror')) { parseUFEDReport(content); return; }
+    setProgress(50,'Extraction XML\u2026');
+    const gxv = (el, fields) => {
+      for (const f of fields.split(',')) {
+        const c = el.querySelector(f.trim()); if (c) return c.textContent.trim();
+        const a = el.getAttribute(f.trim()); if (a) return a;
+      }
+      return '';
+    };
+    xmlDoc.querySelectorAll('Contact,contact,CONTACT').forEach(el =>
+      AppState.data.contacts.push({name:gxv(el,'Name,FullName,DisplayName,nom'),phone:gxv(el,'Phone,PhoneNumber,Number'),email:gxv(el,'Email,EmailAddress'),created:gxv(el,'Created,DateCreated'),source:'XML',deleted:el.getAttribute('deleted')==='true'}));
+    xmlDoc.querySelectorAll('Call,call,CallLog').forEach(el =>
+      AppState.data.calls.push({datetime:gxv(el,'Date,DateTime,Timestamp'),type:gxv(el,'Type,Direction,CallType')||'unknown',duration:gxv(el,'Duration'),contact:gxv(el,'Contact,Name'),number:gxv(el,'Number,PhoneNumber'),deleted:el.getAttribute('deleted')==='true'}));
+    xmlDoc.querySelectorAll('SMS,sms,Message,SMSMessage').forEach(el =>
+      AppState.data.sms.push({sender:gxv(el,'From,Sender'),recipient:gxv(el,'To,Recipient'),content:gxv(el,'Body,Content,Text'),timestamp:gxv(el,'Date,Timestamp'),status:gxv(el,'Status,ReadStatus'),type:'SMS',deleted:el.getAttribute('deleted')==='true'}));
+    setProgress(100,'Termin\u00e9 !');
+    hideProgress();
+    document.getElementById('drop-zone').classList.add('hidden');
+    updateAllCounters(); renderAllSections(); saveToLocalStorage();
+    showSection('dashboard'); showToast('XML import\u00e9 !','success');
+  } catch(err) { hideProgress(); showToast('Erreur XML : '+err.message,'error'); }
+}
+
+// ── Rendu des sections ────────────────────────────────────────────────────────
+function renderAllSections() {
+  renderExtractionInfo();
+  renderTable('contacts',['Nom','T\u00e9l\u00e9phone','Email','Cr\u00e9\u00e9','Modifi\u00e9','Source'],
+    AppState.data.contacts.map(c=>[c.name,c.phone,c.email,c.created,c.modified,c.source]),
+    AppState.data.contacts.map(c=>c.deleted));
+  renderTable('calls',['Date/Heure','Type','Dur\u00e9e','Contact','Num\u00e9ro','Source'],
+    AppState.data.calls.map(c=>[c.datetime,formatCallType(c.type),c.duration,c.contact,c.number,c.source]),
+    AppState.data.calls.map(c=>c.deleted));
+  renderTable('sms',['Exp\u00e9diteur','Destinataire','Contenu','Horodatage','Statut','Type'],
+    AppState.data.sms.map(s=>[s.sender,s.recipient,s.content,s.timestamp,formatStatus(s.status),s.type]),
+    AppState.data.sms.map(s=>s.deleted));
+  renderTable('im',['Application','Participants','Exp\u00e9diteur','Contenu','Horodatage','Type'],
+    AppState.data.im.map(m=>[m.app,m.participants,m.sender,m.content,m.timestamp,m.type]),
+    AppState.data.im.map(m=>m.deleted));
+  renderTable('media',['Fichier','Date','Taille','Chemin','GPS','Type'],
+    AppState.data.media.map(m=>[m.filename,m.date,m.size,m.path,m.gps,m.type]),
+    AppState.data.media.map(m=>m.deleted));
+  renderTable('browser',['URL','Titre','Date de visite','Visites','Navigateur'],
+    AppState.data.browser.map(b=>[b.url,b.title,b.visitDate,b.visits,b.browser]),
+    AppState.data.browser.map(b=>b.deleted));
+  renderTable('emails',['Exp\u00e9diteur','Destinataire','Objet','Date','R\u00e9sum\u00e9','Dossier'],
+    AppState.data.emails.map(e=>[e.sender,e.recipient,e.subject,e.date,e.summary,e.folder]),
+    AppState.data.emails.map(e=>e.deleted));
+  renderTable('apps',['Nom','Version','Date install.','Package','Source'],
+    AppState.data.apps.map(a=>[a.name,a.version,a.installDate,a.package,a.source]),
+    AppState.data.apps.map(a=>a.deleted));
+  renderTable('deleted',['Type','Contenu','Date','D\u00e9tails'],
+    AppState.data.deleted.map(d=>[d.type,d.content,d.date,d.details]),
+    AppState.data.deleted.map(()=>true));
+}
+
+function renderExtractionInfo() {
+  const cont = document.getElementById('extraction-info-container');
+  const info = AppState.data.extraction;
+  const fields = [
+    ['Num\u00e9ro de dossier', info.caseNumber],
+    ['Date d\'extraction', info.extractionDate],
+    ['Type d\'extraction', info.extractionType],
+    ['Marque de l\'appareil', info.deviceBrand],
+    ['Mod\u00e8le de l\'appareil', info.deviceModel],
+    ['Syst\u00e8me d\'exploitation', info.deviceOS],
+    ['Version OS', info.deviceOSVersion],
+    ['IMEI', info.imei],
+    ['Num\u00e9ro de t\u00e9l\u00e9phone', info.phoneNumber],
+    ['Investigateur', info.examiner],
+    ['Version UFED', info.ufedVersion],
+    ['Hash MD5', info.md5],
+    ['Hash SHA256', info.sha256],
+  ];
+  if (info.sha1) fields.push(['Hash SHA1', info.sha1]);
+  const validFields = fields.filter(([,v]) => v && v !== 'N/A');
+  if (validFields.length === 0) { cont.innerHTML = '<div class="empty-state">Aucune donn\u00e9e d\'extraction disponible.</div>'; return; }
+  cont.innerHTML = validFields.map(([l,v]) =>
+    '<div class="info-row"><span class="info-label">'+escHtml(l)+'</span><span class="info-value">'+escHtml(v)+'</span></div>'
+  ).join('');
+}
+
+function renderTable(id, headers, rows, delFlags) {
+  const wrap = document.getElementById(id+'-table-wrap');
+  if (!wrap) return;
+  if (!rows||rows.length===0) { wrap.innerHTML='<div class="empty-state">Aucune donn\u00e9e disponible.</div>'; return; }
+  const q = AppState.searchQuery.toLowerCase();
+  const filteredRows = rows.map((row,i) => ({row,del:delFlags&&delFlags[i],i}))
+    .filter(({row}) => !q || row.join(' ').toLowerCase().includes(q));
+  if (filteredRows.length === 0) { wrap.innerHTML='<div class="empty-state">Aucun r\u00e9sultat pour cette recherche.</div>'; return; }
+  let html = '<table class="data-table"><thead><tr>'+headers.map(h=>'<th>'+escHtml(h)+'</th>').join('')+'</tr></thead><tbody>';
+  filteredRows.forEach(({row,del}) => {
+    html += '<tr class="'+(del?'deleted-row':'')+'">';
+    row.forEach((cell,ci) => {
+      const cellStr = String(cell||'\u2014');
+      const hl = q ? highlightText(escHtml(cellStr), q) : escHtml(cellStr);
+      html += '<td>'+hl+(del&&ci===0?' <span class="deleted-badge">SUPPRIM\u00c9</span>':'')+'</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+function formatCallType(t) {
+  const tl = (t||'').toLowerCase();
+  if (tl==='incoming'||tl==='entrant') return '<span class="badge badge-incoming">&#128242; Entrant</span>';
+  if (tl==='outgoing'||tl==='sortant') return '<span class="badge badge-outgoing">&#128228; Sortant</span>';
+  if (tl==='missed'||tl==='manqu\u00e9')    return '<span class="badge badge-missed">&#10060; Manqu\u00e9</span>';
+  return t||'\u2014';
+}
+function formatStatus(s) {
+  const sl = (s||'').toLowerCase();
+  if (sl.includes('read')||sl.includes('lu')) return '<span class="badge badge-read">Lu</span>';
+  if (sl.includes('unread')||sl.includes('non lu')) return '<span class="badge badge-unread">Non lu</span>';
+  return s||'\u2014';
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function showSection(name) {
+  document.querySelectorAll('.data-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const s = document.getElementById('section-'+name); if (s) s.classList.add('active');
+  const n = document.getElementById('nav-'+name); if (n) n.classList.add('active');
+  AppState.currentSection = name;
+}
+
+// ── Compteurs ─────────────────────────────────────────────────────────────────
+function updateAllCounters() {
+  ['contacts','calls','sms','im','media','browser','emails','apps','deleted'].forEach(k => {
+    const count = AppState.data[k].length;
+    const b = document.getElementById('badge-'+k); if (b) b.textContent = count;
+    const s = document.getElementById('stat-'+k);  if (s) s.textContent  = count;
+  });
+  const eb = document.getElementById('badge-extraction');
+  if (eb) {
+    const cnt = Object.values(AppState.data.extraction).filter(v=>v&&v!=='N/A').length;
+    eb.textContent = cnt > 0 ? cnt : '\u2014';
+  }
+}
+
+// ── Recherche globale ─────────────────────────────────────────────────────────
+function globalSearch(q) {
+  AppState.searchQuery = q;
+  renderAllSections();
+  // Si une recherche est active et qu'on est sur le tableau de bord, afficher la première section avec des données
+  if (q && AppState.currentSection === 'dashboard') {
+    const firstWithData = ['contacts','calls','sms','im','media','browser','emails','apps','deleted']
+      .find(k => AppState.data[k] && AppState.data[k].length > 0);
+    if (firstWithData) showSection(firstWithData);
+  }
+}
+
+// ── Mode sombre ───────────────────────────────────────────────────────────────
+function toggleDarkMode() {
+  AppState.darkMode = !AppState.darkMode;
+  document.body.classList.toggle('dark', AppState.darkMode);
+  document.getElementById('dark-toggle').textContent = AppState.darkMode ? '\u2600\uFE0F' : '\uD83C\uDF19';
+  localStorage.setItem('ufed_darkmode', AppState.darkMode ? '1' : '0');
+}
+
+// ── localStorage ──────────────────────────────────────────────────────────────
+function saveToLocalStorage() {
+  try { localStorage.setItem('ufed_data', JSON.stringify(AppState.data)); } catch(e) { console.warn('localStorage:', e); }
+}
+function restoreFromLocalStorage() {
+  try {
+    const saved = localStorage.getItem('ufed_data');
+    if (!saved) return;
+    const parsed = JSON.parse(saved);
+    if (parsed && typeof parsed === 'object') {
+      Object.assign(AppState.data, parsed);
+      const hasData = Object.values(AppState.data).some(v=>Array.isArray(v)?v.length>0:Object.keys(v).length>0);
+      if (hasData) {
+        document.getElementById('drop-zone').classList.add('hidden');
+        updateAllCounters(); renderAllSections();
+        showToast('Donn\u00e9es restaur\u00e9es depuis le cache.','success');
+      }
+    }
+  } catch(e) { console.warn('Restore failed:', e); }
+}
+function clearData() {
+  if (!confirm('Effacer toutes les donn\u00e9es ?')) return;
+  AppState.data = {extraction:{},contacts:[],calls:[],sms:[],im:[],media:[],browser:[],emails:[],apps:[],deleted:[]};
+  localStorage.removeItem('ufed_data');
+  document.getElementById('drop-zone').classList.remove('hidden');
+  document.getElementById('file-input').value = '';
+  updateAllCounters(); renderAllSections(); showSection('dashboard');
+  showToast('Donn\u00e9es effac\u00e9es.','warning');
+}
+
+// ── Exports ───────────────────────────────────────────────────────────────────
+function exportJSON() {
+  try {
+    const blob = new Blob([JSON.stringify(AppState.data,null,2)],{type:'application/json'});
+    saveAs(blob,'ufed_export_'+dateTag()+'.json');
+    showToast('Export JSON t\u00e9l\u00e9charg\u00e9.','success');
+  } catch(e) { showToast('Erreur JSON : '+e.message,'error'); }
+}
+function exportCurrentCSV() { exportSectionCSV(AppState.currentSection); }
+function exportSectionCSV(section) {
+  try {
+    let data = AppState.data[section];
+    if (!data||(Array.isArray(data)&&data.length===0)) { showToast('Aucune donn\u00e9e \u00e0 exporter.','warning'); return; }
+    if (!Array.isArray(data)) data = Object.entries(data).map(([k,v])=>({champ:k,valeur:v}));
+    const blob = new Blob([Papa.unparse(data)],{type:'text/csv;charset=utf-8;'});
+    saveAs(blob,'ufed_'+section+'_'+dateTag()+'.csv');
+    showToast('Export CSV t\u00e9l\u00e9charg\u00e9.','success');
+  } catch(e) { showToast('Erreur CSV : '+e.message,'error'); }
+}
+function dateTag() { return new Date().toISOString().slice(0,10).replace(/-/g,''); }
+
+// ── Modal ──────────────────────────────────────────────────────────────────────
+function openExportModal()  { document.getElementById('export-modal').classList.add('visible'); }
+function closeExportModal() { document.getElementById('export-modal').classList.remove('visible'); }
+document.getElementById('export-modal').addEventListener('click', function(e) { if(e.target===this) closeExportModal(); });
+
+// ── Génération Word (docx.js v8.5.0) ─────────────────────────────────────────
+async function generateDocx() {
+  if (!window.docx) { showToast('Biblioth\u00e8que docx non charg\u00e9e.','error'); return; }
+  const rptNumber   = document.getElementById('rpt-number').value    || 'N/A';
+  const rptJudicial = document.getElementById('rpt-judicial').value  || 'N/A';
+  const rptAuthor   = document.getElementById('rpt-author').value    || 'N/A';
+  const rptUnit     = document.getElementById('rpt-unit').value      || 'N/A';
+  const rptDate     = document.getElementById('rpt-date').value      || new Date().toISOString().slice(0,10);
+  const rptClass    = document.getElementById('rpt-classification').value || 'NON CLASSIFI\u00c9';
+  const rptSubject  = document.getElementById('rpt-subject').value   || '';
+  const inc = {
+    extraction: document.getElementById('chk-extraction').checked,
+    contacts:   document.getElementById('chk-contacts').checked,
+    calls:      document.getElementById('chk-calls').checked,
+    sms:        document.getElementById('chk-sms').checked,
+    im:         document.getElementById('chk-im').checked,
+    media:      document.getElementById('chk-media').checked,
+    browser:    document.getElementById('chk-browser').checked,
+    emails:     document.getElementById('chk-emails').checked,
+    apps:       document.getElementById('chk-apps').checked,
+    deleted:    document.getElementById('chk-deleted').checked
+  };
+  closeExportModal();
+  showToast('G\u00e9n\u00e9ration du rapport Word\u2026');
+  try {
+    const { Document, Paragraph, Table, TableRow, TableCell, TextRun,
+            HeadingLevel, AlignmentType, Header, Footer, PageNumber,
+            WidthType, BorderStyle, ShadingType, Packer, PageBreak } = window.docx;
+    const NAVY='1a2744', LGRAY='F4F6FA', WHITE='FFFFFF';
+    const info = AppState.data.extraction;
+
+    function hdrRow(hdrs) {
+      return new TableRow({ tableHeader:true, children: hdrs.map(h => new TableCell({
+        shading:{fill:NAVY,type:ShadingType.CLEAR,color:'auto'},
+        children:[new Paragraph({children:[new TextRun({text:String(h||''),bold:true,color:WHITE,size:18})]})]
+      }))});
+    }
+    function dataRow(cells, isDel, isAlt) {
+      const bg = isDel ? 'FFF3E0' : (isAlt ? 'F8FAFC' : WHITE);
+      const fg = isDel ? 'B45309' : '1e293b';
+      return new TableRow({ children: cells.map(c => new TableCell({
+        shading:{fill:bg,type:ShadingType.CLEAR,color:'auto'},
+        children:[new Paragraph({children:[new TextRun({text:String(c||'\u2014'),color:fg,size:17})]})]
+      }))});
+    }
+    function makeTable(headers, rows, delFlags) {
+      return new Table({ width:{size:100,type:WidthType.PERCENTAGE}, rows:[
+        hdrRow(headers),
+        ...rows.map((r,i) => dataRow(r, delFlags&&delFlags[i], i%2===1))
+      ]});
+    }
+    function h1t(text) { return new Paragraph({text,heading:HeadingLevel.HEADING_1,spacing:{before:400,after:200}}); }
+    function para(text, opts={}) { return new Paragraph({children:[new TextRun({text:text||'',...opts})],spacing:{after:100}}); }
+    function pb() { return new Paragraph({children:[new PageBreak()]}); }
+
+    const children = [];
+
+    // Page de couverture
+    children.push(para(''));
+    children.push(para(''));
+    children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({
+      text:'\u26a0 '+rptClass+' \u26a0', bold:true,
+      color: rptClass==='CONFIDENTIEL'?'DC2626':rptClass==='DIFFUSION RESTREINTE'?'D97706':'166534', size:28
+    })]}));
+    children.push(para(''));
+    children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"RAPPORT D'ANALYSE FORENSIQUE NUM\u00c9RIQUE",bold:true,color:NAVY,size:48})]}));
+    children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:'Extraction et analyse de donn\u00e9es mobiles',color:'64748B',size:26})]}));
+    children.push(para(''));
+
+    // Tableau de couverture
+    const coverData = [
+      ['Num\u00e9ro de rapport', rptNumber], ['R\u00e9f\u00e9rence judiciaire', rptJudicial],
+      ['Date du rapport', rptDate],     ['Auteur / Investigateur', rptAuthor],
+      ['Unit\u00e9 / Service', rptUnit],     ['Appareil analys\u00e9', (info.deviceBrand||'')+' '+(info.deviceModel||'')],
+      ['IMEI', info.imei||'N/A'],       ['Version UFED', info.ufedVersion||'N/A']
+    ];
+    children.push(new Table({
+      width:{size:70,type:WidthType.PERCENTAGE},
+      rows: coverData.map(([l,v]) => new TableRow({children:[
+        new TableCell({shading:{fill:NAVY,type:ShadingType.CLEAR,color:'auto'},children:[new Paragraph({children:[new TextRun({text:l,bold:true,color:WHITE,size:18})]})]}),
+        new TableCell({children:[new Paragraph({children:[new TextRun({text:String(v||'N/A'),size:18})]})]})
+      ]}))
+    }));
+
+    if (rptSubject) {
+      children.push(para(''));
+      children.push(para("Objet de l'enqu\u00eate", {bold:true,color:NAVY,size:22}));
+      children.push(para(rptSubject, {size:20}));
+    }
+    children.push(para(''));
+    children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"Ce document est un rapport officiel d'analyse forensique num\u00e9rique. Toute reproduction non autoris\u00e9e est interdite.",italics:true,color:'94A3B8',size:16})]}));
+    children.push(pb());
+
+    // Table des matières
+    children.push(h1t('TABLE DES MATI\u00c8RES'));
+    [['1.',"Informations d'extraction",inc.extraction],['2.','Contacts',inc.contacts],
+     ['3.',"Journal d'appels",inc.calls],['4.','SMS / MMS',inc.sms],
+     ['5.','Messageries instantan\u00e9es',inc.im],['6.','M\u00e9dias',inc.media],
+     ['7.','Historique de navigation',inc.browser],['8.','Emails',inc.emails],
+     ['9.','Applications install\u00e9es',inc.apps],['10.','Donn\u00e9es supprim\u00e9es',inc.deleted]
+    ].filter(([,,ok])=>ok).forEach(([num,title]) =>
+      children.push(new Paragraph({children:[new TextRun({text:num+'  ',bold:true,color:NAVY,size:22}),new TextRun({text:title,size:22})],spacing:{after:80}}))
+    );
+    children.push(pb());
+
+    // Section 1 : Infos extraction
+    if (inc.extraction) {
+      children.push(h1t("1. INFORMATIONS D'EXTRACTION"));
+      const extFields = [
+        ['Num\u00e9ro de dossier',info.caseNumber],["Date d'extraction",info.extractionDate],
+        ["Type d'extraction",info.extractionType],['Marque',info.deviceBrand],
+        ['Mod\u00e8le',info.deviceModel],['OS',info.deviceOS],['Version OS',info.deviceOSVersion],
+        ['IMEI',info.imei],['Num\u00e9ro t\u00e9l\u00e9phone',info.phoneNumber],['Investigateur',info.examiner],
+        ['Version UFED',info.ufedVersion],['MD5',info.md5],['SHA256',info.sha256]
+      ].filter(([,v])=>v&&v!=='N/A');
+      if (extFields.length > 0) children.push(makeTable(['Champ','Valeur'],extFields,extFields.map(()=>false)));
+      children.push(pb());
+    }
+
+    // Section 2 : Contacts
+    if (inc.contacts && AppState.data.contacts.length > 0) {
+      children.push(h1t('2. CONTACTS'));
+      children.push(para('Nombre total : '+AppState.data.contacts.length));
+      children.push(makeTable(['Nom','T\u00e9l\u00e9phone','Email','Cr\u00e9\u00e9','Modifi\u00e9','Source'],
+        AppState.data.contacts.map(c=>[c.name,c.phone,c.email,c.created,c.modified,c.source]),
+        AppState.data.contacts.map(c=>c.deleted)));
+      children.push(pb());
+    }
+
+    // Section 3 : Appels
+    if (inc.calls && AppState.data.calls.length > 0) {
+      children.push(h1t("3. JOURNAL D'APPELS"));
+      const inc2 = AppState.data.calls.filter(c=>c.type==='incoming').length;
+      const out2 = AppState.data.calls.filter(c=>c.type==='outgoing').length;
+      const mis  = AppState.data.calls.filter(c=>c.type==='missed').length;
+      children.push(para('Total : '+AppState.data.calls.length+' | Entrants : '+inc2+' | Sortants : '+out2+' | Manqu\u00e9s : '+mis));
+      children.push(makeTable(['Date/Heure','Type','Dur\u00e9e','Contact','Num\u00e9ro','Source'],
+        AppState.data.calls.map(c=>[c.datetime,c.type,c.duration,c.contact,c.number,c.source]),
+        AppState.data.calls.map(c=>c.deleted)));
+      children.push(pb());
+    }
+
+    // Section 4 : SMS
+    if (inc.sms && AppState.data.sms.length > 0) {
+      children.push(h1t('4. SMS / MMS'));
+      children.push(para('Nombre total : '+AppState.data.sms.length));
+      children.push(makeTable(['Exp\u00e9diteur','Destinataire','Contenu','Horodatage','Statut','Type'],
+        AppState.data.sms.map(s=>[s.sender,s.recipient,s.content,s.timestamp,s.status,s.type]),
+        AppState.data.sms.map(s=>s.deleted)));
+      children.push(pb());
+    }
+
+    // Section 5 : Messageries
+    if (inc.im && AppState.data.im.length > 0) {
+      children.push(h1t('5. MESSAGERIES INSTANTAN\u00c9ES'));
+      children.push(para('Nombre total : '+AppState.data.im.length));
+      children.push(makeTable(['Application','Participants','Exp\u00e9diteur','Contenu','Horodatage','Type'],
+        AppState.data.im.map(m=>[m.app,m.participants,m.sender,m.content,m.timestamp,m.type]),
+        AppState.data.im.map(m=>m.deleted)));
+      children.push(pb());
+    }
+
+    // Section 6 : Médias
+    if (inc.media && AppState.data.media.length > 0) {
+      children.push(h1t('6. M\u00c9DIAS'));
+      children.push(para('Nombre total : '+AppState.data.media.length));
+      children.push(makeTable(['Fichier','Date','Taille','Chemin','GPS','Type'],
+        AppState.data.media.map(m=>[m.filename,m.date,m.size,m.path,m.gps,m.type]),
+        AppState.data.media.map(m=>m.deleted)));
+      children.push(pb());
+    }
+
+    // Section 7 : Historique
+    if (inc.browser && AppState.data.browser.length > 0) {
+      children.push(h1t('7. HISTORIQUE DE NAVIGATION'));
+      children.push(para('Nombre total : '+AppState.data.browser.length));
+      children.push(makeTable(['URL','Titre','Date de visite','Visites','Navigateur'],
+        AppState.data.browser.map(b=>[b.url,b.title,b.visitDate,b.visits,b.browser]),
+        AppState.data.browser.map(b=>b.deleted)));
+      children.push(pb());
+    }
+
+    // Section 8 : Emails
+    if (inc.emails && AppState.data.emails.length > 0) {
+      children.push(h1t('8. EMAILS'));
+      children.push(para('Nombre total : '+AppState.data.emails.length));
+      children.push(makeTable(['Exp\u00e9diteur','Destinataire','Objet','Date','R\u00e9sum\u00e9','Dossier'],
+        AppState.data.emails.map(e=>[e.sender,e.recipient,e.subject,e.date,e.summary,e.folder]),
+        AppState.data.emails.map(e=>e.deleted)));
+      children.push(pb());
+    }
+
+    // Section 9 : Applications
+    if (inc.apps && AppState.data.apps.length > 0) {
+      children.push(h1t('9. APPLICATIONS INSTALL\u00c9ES'));
+      children.push(para('Nombre total : '+AppState.data.apps.length));
+      children.push(makeTable(['Nom','Version','Date install.','Package','Source'],
+        AppState.data.apps.map(a=>[a.name,a.version,a.installDate,a.package,a.source]),
+        AppState.data.apps.map(a=>a.deleted)));
+      children.push(pb());
+    }
+
+    // Section 10 : Données supprimées
+    if (inc.deleted && AppState.data.deleted.length > 0) {
+      children.push(h1t('10. DONN\u00c9ES SUPPRIM\u00c9ES / R\u00c9CUP\u00c9R\u00c9ES'));
+      children.push(para('Nombre total : '+AppState.data.deleted.length, {color:'B45309'}));
+      children.push(makeTable(['Type','Contenu','Date','D\u00e9tails'],
+        AppState.data.deleted.map(d=>[d.type,d.content,d.date,d.details]),
+        AppState.data.deleted.map(()=>true)));
+    }
+
+    // Créer le document
+    const doc = new Document({
+      creator: rptAuthor,
+      title: "Rapport d'Analyse Forensique \u2014 " + rptNumber,
+      description: 'G\u00e9n\u00e9r\u00e9 par UFED Builder 26',
+      sections: [{
+        headers: { default: new Header({ children:[new Paragraph({
+          alignment: AlignmentType.LEFT,
+          children:[
+            new TextRun({text:'UFED Builder \u2014 Rapport Forensique',bold:true,color:NAVY,size:18}),
+            new TextRun({text:'   |   G\u00e9n\u00e9r\u00e9 le : '+rptDate+'   |   '+rptClass,color:'94A3B8',size:18})
+          ],
+          border:{bottom:{style:BorderStyle.SINGLE,size:4,color:NAVY}}
+        })]})},
+        footers: { default: new Footer({ children:[new Paragraph({
+          alignment: AlignmentType.CENTER,
+          children:[
+            new TextRun({text:'Page ',size:18,color:'64748B'}),
+            new TextRun({children:[PageNumber.CURRENT],size:18,color:'64748B'}),
+            new TextRun({text:' sur ',size:18,color:'64748B'}),
+            new TextRun({children:[PageNumber.TOTAL_PAGES],size:18,color:'64748B'}),
+            new TextRun({text:'   \u2014   '+rptClass+'   \u2014   R\u00e9f : '+rptNumber,size:18,color:'94A3B8'})
+          ],
+          border:{top:{style:BorderStyle.SINGLE,size:4,color:NAVY}}
+        })]})},
+        children: children
+      }]
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, 'rapport_forensique_'+rptNumber.replace(/[^a-zA-Z0-9]/g,'_')+'_'+dateTag()+'.docx');
+    showToast('Rapport Word g\u00e9n\u00e9r\u00e9 !','success');
+  } catch(err) {
+    console.error('Erreur docx:', err);
+    showToast('Erreur g\u00e9n\u00e9ration : '+err.message,'error');
+  }
+}
+
+// ── Utilitaires ───────────────────────────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function highlightText(text, q) {
+  if (!q) return text;
+  return text.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');
+}
+function showToast(msg, type='info') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast'+(type==='success'?' success':type==='error'?' error':type==='warning'?' warning':'');
+  t.textContent = (type==='success'?'\u2705':type==='error'?'\u274c':type==='warning'?'\u26a0\ufe0f':'\u2139\ufe0f')+' '+msg;
+  c.appendChild(t);
+  setTimeout(()=>{ t.style.transition='opacity 0.4s'; t.style.opacity='0'; setTimeout(()=>t.remove(),400); }, 3500);
+}
+</script>
+</body>
+</html>
