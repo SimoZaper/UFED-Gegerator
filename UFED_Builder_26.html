@@ -381,7 +381,7 @@ function handleFileSelect(file) {
     else if (ext === 'xml') parseXMLFile(content);
     else parseUFEDReport(content);
   };
-  reader.onerror = () => showToast('Erreur de lecture', 'error');
+  reader.onerror = () => showToast('Erreur de lecture : ' + (reader.error ? reader.error.message : 'inconnue'), 'error');
   reader.readAsText(file, 'UTF-8');
 }
 
@@ -515,10 +515,14 @@ function extractDeleted(doc) {
       }
     }
   });
+  const seenContent = new Set(results.map(r => r.content));
   doc.querySelectorAll('.deleted,.recovered,[data-deleted="true"],.carved').forEach(el => {
     const text = el.textContent.trim();
-    if (text && !results.some(r => r.content === text.substring(0,200)))
-      results.push({type:'R\u00e9cup\u00e9r\u00e9',content:text.substring(0,200),date:'',details:text.substring(0,300),deleted:true});
+    const key = text.substring(0,200);
+    if (text && !seenContent.has(key)) {
+      seenContent.add(key);
+      results.push({type:'R\u00e9cup\u00e9r\u00e9',content:key,date:'',details:text.substring(0,300),deleted:true});
+    }
   });
   return results;
 }
