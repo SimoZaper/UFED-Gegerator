@@ -329,6 +329,14 @@
 <div id="toast-container"></div>
 
 <script>
+// ── Constantes ────────────────────────────────────────────────────────────────
+// Limite la recherche regex aux N premiers caractères pour éviter les problèmes de performance sur de grands documents
+const MAX_REGEX_SEARCH_LENGTH = 8000;
+// Longueur de clé utilisée pour dédupliquer les éléments supprimés déjà trouvés
+const DELETED_CONTENT_DEDUPE_LENGTH = 200;
+// Longueur maximale du champ "détails" pour les éléments supprimés récupérés
+const DELETED_DETAILS_MAX_LENGTH = 300;
+
 // ── État global ──────────────────────────────────────────────────────────────
 const AppState = {
   currentSection: 'dashboard',
@@ -402,7 +410,7 @@ function parseUFEDReport(html) {
     const doc = parser.parseFromString(html, 'text/html');
     setProgress(30, 'Extraction infos\u2026'); AppState.data.extraction = extractExtractionInfo(doc);
     setProgress(40, 'Contacts\u2026');         AppState.data.contacts   = extractSection(doc, ['contact','carnet','address book','phonebook'], buildContact);
-    setProgress(50, 'Appels\u2026');           AppState.data.calls      = extractSection(doc, ['call log','journal d'appel','appel','call'], buildCall);
+    setProgress(50, 'Appels\u2026');           AppState.data.calls      = extractSection(doc, ['call log','journal d\u0027appel','appel','call'], buildCall);
     setProgress(58, 'SMS\u2026');              AppState.data.sms        = extractSection(doc, ['sms','mms','message','texto'], buildSMS);
     setProgress(65, 'Messageries\u2026');      AppState.data.im         = extractSection(doc, ['whatsapp','telegram','signal','instant message','chat','messenger','viber'], buildIM);
     setProgress(72, 'M\u00e9dias\u2026');     AppState.data.media      = extractSection(doc, ['photo','video','audio','image','media'], buildMedia);
@@ -433,8 +441,7 @@ function extractExtractionInfo(doc) {
     const dts = dl.querySelectorAll('dt'), dds = dl.querySelectorAll('dd');
     dts.forEach((dt,i) => { if (dds[i]) mapExtractionKey(info, dt.textContent.trim(), dds[i].textContent.trim()); });
   });
-  // Limiter la recherche regex aux 8000 premiers caractères pour éviter les problèmes de performance
-  const bodyHtml = (doc.body ? doc.body.innerText : '').slice(0, 8000);
+  const bodyHtml = (doc.body ? doc.body.innerText : '').slice(0, MAX_REGEX_SEARCH_LENGTH);
   const re = /([A-Za-z\u00C0-\u00FF\s\/\-]+)\s*[::\uFF1A]\s*([^\n]{1,200})/g;
   let m;
   while ((m = re.exec(bodyHtml)) !== null) mapExtractionKey(info, m[1].trim(), m[2].trim());
@@ -520,13 +527,13 @@ function extractDeleted(doc) {
       }
     }
   });
-  const seenContent = new Set(results.map(r => r.content.substring(0, 200)));
+  const seenContent = new Set(results.map(r => r.content.substring(0, DELETED_CONTENT_DEDUPE_LENGTH)));
   doc.querySelectorAll('.deleted,.recovered,[data-deleted="true"],.carved').forEach(el => {
     const text = el.textContent.trim();
-    const key = text.substring(0, 200);
+    const key = text.substring(0, DELETED_CONTENT_DEDUPE_LENGTH);
     if (text && !seenContent.has(key)) {
       seenContent.add(key);
-      results.push({type:'R\u00e9cup\u00e9r\u00e9',content:key,date:'',details:text.substring(0,300),deleted:true});
+      results.push({type:'R\u00e9cup\u00e9r\u00e9',content:key,date:'',details:text.substring(0,DELETED_DETAILS_MAX_LENGTH),deleted:true});
     }
   });
   return results;
