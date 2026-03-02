@@ -433,7 +433,8 @@ function extractExtractionInfo(doc) {
     const dts = dl.querySelectorAll('dt'), dds = dl.querySelectorAll('dd');
     dts.forEach((dt,i) => { if (dds[i]) mapExtractionKey(info, dt.textContent.trim(), dds[i].textContent.trim()); });
   });
-  const bodyHtml = doc.body ? doc.body.innerText : '';
+  // Limiter la recherche regex aux 8000 premiers caractères pour éviter les problèmes de performance
+  const bodyHtml = (doc.body ? doc.body.innerText : '').slice(0, 8000);
   const re = /([A-Za-z\u00C0-\u00FF\s\/\-]+)\s*[::\uFF1A]\s*([^\n]{1,200})/g;
   let m;
   while ((m = re.exec(bodyHtml)) !== null) mapExtractionKey(info, m[1].trim(), m[2].trim());
@@ -478,12 +479,16 @@ function extractSection(doc, keywords, builder) {
   return results;
 }
 function getCT(cells, i) { return cells[i] ? cells[i].textContent.trim().replace(/\s+/g,' ') : ''; }
-function isDelRow(row) {
-  const cls = (row.className||'').toLowerCase(), style = (row.getAttribute('style')||'').toLowerCase();
-  return cls.includes('delete')||cls.includes('recover')||cls.includes('carved')||
-         style.includes('line-through')||style.includes('color: red')||style.includes('color:red')||
-         row.getAttribute('data-deleted')==='true'||row.textContent.toLowerCase().includes('(deleted)');
-}
+  // Vérifier les attributs de classe/style en priorité avant d'analyser le contenu textuel
+  function isDelRow(row) {
+    const cls = (row.className||'').toLowerCase(), style = (row.getAttribute('style')||'').toLowerCase();
+    if (cls.includes('delete')||cls.includes('recover')||cls.includes('carved')) return true;
+    if (style.includes('line-through')||style.includes('color: red')||style.includes('color:red')) return true;
+    if (row.getAttribute('data-deleted')==='true') return true;
+    // Vérification textuelle en dernier recours (coûteuse)
+    const firstCell = row.querySelector('td');
+    return !!(firstCell && firstCell.textContent.toLowerCase().includes('(deleted)'));
+  }
 function buildContact(cells, row) { return {name:getCT(cells,0),phone:getCT(cells,1),email:getCT(cells,2),created:getCT(cells,3),modified:getCT(cells,4),source:getCT(cells,5),deleted:isDelRow(row)}; }
 function buildCall(cells, row) {
   const t = getCT(cells,1).toLowerCase();
@@ -515,10 +520,10 @@ function extractDeleted(doc) {
       }
     }
   });
-  const seenContent = new Set(results.map(r => r.content));
+  const seenContent = new Set(results.map(r => r.content.substring(0, 200)));
   doc.querySelectorAll('.deleted,.recovered,[data-deleted="true"],.carved').forEach(el => {
     const text = el.textContent.trim();
-    const key = text.substring(0,200);
+    const key = text.substring(0, 200);
     if (text && !seenContent.has(key)) {
       seenContent.add(key);
       results.push({type:'R\u00e9cup\u00e9r\u00e9',content:key,date:'',details:text.substring(0,300),deleted:true});
@@ -706,7 +711,12 @@ function updateAllCounters() {
 function globalSearch(q) {
   AppState.searchQuery = q;
   renderAllSections();
-  if (q && AppState.currentSection === 'dashboard') showSection('contacts');
+  // Si une recherche est active et qu'on est sur le tableau de bord, afficher la première section avec des données
+  if (q && AppState.currentSection === 'dashboard') {
+    const firstWithData = ['contacts','calls','sms','im','media','browser','emails','apps','deleted']
+      .find(k => AppState.data[k] && AppState.data[k].length > 0);
+    if (firstWithData) showSection(firstWithData);
+  }
 }
 
 // ── Mode sombre ───────────────────────────────────────────────────────────────
