@@ -130,6 +130,52 @@
     body.dark .badge-incoming { background: #14532d; color: #86efac; }
     body.dark .badge-outgoing { background: #1e3a5f; color: #93c5fd; }
     body.dark .badge-missed { background: #450a0a; color: #fca5a5; }
+    /* ── Multi-folder panel ─────────────────────────────────────────── */
+    #multi-folder-panel { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 24px; border: 1px solid var(--border); }
+    .mfp-title { font-size: .95rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .folder-src { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; background: var(--gray-light); border: 1px solid var(--border); margin-bottom: 10px; }
+    .folder-src-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .folder-src-info { flex: 1; min-width: 0; }
+    .folder-src-name { font-size: .88rem; font-weight: 600; }
+    .folder-src-status { font-size: .76rem; color: var(--text-muted); margin-top: 2px; }
+    .folder-src-status.ok { color: var(--success); }
+    .btn-folder-pick { background: var(--navy); color: #fff; border: none; padding: 7px 14px; border-radius: 8px; font-size: .8rem; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+    .folder-add-btn { background: transparent; border: 1px dashed var(--border); color: var(--text-muted); padding: 9px; border-radius: 8px; font-size: .8rem; cursor: pointer; width: 100%; margin-top: 6px; transition: border-color .2s, color .2s; }
+    .folder-add-btn:hover { border-color: var(--accent); color: var(--accent); }
+    /* ── SCPJ Wizard ────────────────────────────────────────────────── */
+    .scpj-modal-box { background: var(--card-bg); border-radius: 16px; width: 860px; max-width: 98vw; max-height: 93vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+    .wiz-steps { display: flex; background: var(--gray-light); border-bottom: 1px solid var(--border); border-radius: 0; }
+    .wiz-step { flex: 1; padding: 13px 6px; text-align: center; font-size: .74rem; font-weight: 600; color: var(--text-muted); border-bottom: 3px solid transparent; cursor: default; }
+    .wiz-step.active { color: var(--navy); border-bottom-color: var(--navy); background: var(--card-bg); }
+    .wiz-step.done { color: var(--success); }
+    .wiz-pane { display: none; padding: 22px 24px; }
+    .wiz-pane.active { display: block; }
+    .counter-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .counter-label { flex: 1; font-size: .88rem; font-weight: 600; }
+    .cnt-btn { width: 28px; height: 28px; border-radius: 6px; background: var(--gray-mid); border: 1px solid var(--border); cursor: pointer; font-size: 1rem; font-weight: 700; }
+    .cnt-val { font-size: 1rem; font-weight: 700; min-width: 28px; text-align: center; }
+    .device-block { background: var(--gray-light); border-radius: 10px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); }
+    .device-block-hdr { font-weight: 700; font-size: .9rem; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .tool-item { display: flex; gap: 10px; padding: 10px 12px; border-radius: 8px; background: var(--gray-light); border: 1px solid var(--border); margin-bottom: 8px; }
+    .tool-item input[type=checkbox] { width: 16px; height: 16px; margin-top: 3px; flex-shrink: 0; accent-color: var(--navy); }
+    .tool-item-body { flex: 1; }
+    .tool-item-name { font-size: .85rem; font-weight: 700; }
+    .tool-item-desc { font-size: .76rem; color: var(--text-muted); font-style: italic; margin-top: 3px; line-height: 1.5; }
+    .demarche-box { background: var(--gray-light); border-left: 4px solid var(--accent); padding: 14px; font-size: .82rem; line-height: 1.8; margin-top: 14px; border-radius: 0 8px 8px 0; white-space: pre-line; }
+    .sum-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 10px; margin-bottom: 16px; }
+    .sum-card { background: var(--gray-light); border-radius: 10px; padding: 14px; text-align: center; border: 1px solid var(--border); }
+    .sum-card .sv { font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+    body.dark .sum-card .sv { color: var(--accent); }
+    .sum-card .sl { font-size: .73rem; color: var(--text-muted); margin-top: 4px; }
+    .btn-export-wrap { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .btn-scpj-rapport { background: #1A2744; color: #fff; border: none; padding: 13px 24px; border-radius: 8px; font-size: .9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-scpj-rapport:hover { background: #243460; }
+    .btn-scpj-annexes { background: #E07B39; color: #fff; border: none; padding: 13px 24px; border-radius: 8px; font-size: .9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-scpj-annexes:hover { background: #c0622a; }
+    .wiz-nav { display: flex; justify-content: space-between; padding: 16px 24px; border-top: 1px solid var(--border); }
+    .btn-wiz-back { background: var(--gray-mid); color: var(--text); border: none; padding: 9px 20px; border-radius: 8px; cursor: pointer; font-size: .88rem; font-weight: 600; }
+    .btn-wiz-next { background: var(--navy); color: #fff; border: none; padding: 9px 24px; border-radius: 8px; cursor: pointer; font-size: .88rem; font-weight: 600; }
+    .scpj-stitle { font-size: .88rem; font-weight: 700; color: var(--navy); margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -166,6 +212,7 @@
   <div class="sidebar-actions">
     <div class="sidebar-label" style="padding-bottom:8px;">Exports</div>
     <button class="btn-sm primary" onclick="openExportModal()">&#128196; G&eacute;n&eacute;rer rapport Word</button>
+    <button class="btn-sm primary" onclick="openSCPJModal()">&#128203; Rapport officiel SCPJ</button>
     <button class="btn-sm" onclick="exportJSON()">&#128229; Exporter JSON</button>
     <button class="btn-sm" onclick="exportCurrentCSV()">&#128202; Exporter CSV</button>
     <div class="sidebar-label" style="padding:12px 0 8px;">Actions</div>
@@ -180,6 +227,22 @@
     <div class="drop-sub">Formats accept&eacute;s : .html, .htm, .xml, .csv</div>
     <button class="btn-browse" onclick="document.getElementById('file-input').click()">&#128193; Parcourir&hellip;</button>
     <input type="file" id="file-input" style="display:none" accept=".html,.htm,.xml,.csv" onchange="handleFileSelect(this.files[0])">
+  </div>
+
+  <!-- Multi-folder loading panel -->
+  <div id="multi-folder-panel">
+    <div class="mfp-title">&#128194; Chargement multi-dossiers UFED</div>
+    <div class="folder-src" id="phone-folder-src">
+      <div class="folder-src-icon">&#128241;</div>
+      <div class="folder-src-info">
+        <div class="folder-src-name">Dossier T&eacute;l&eacute;phone</div>
+        <div class="folder-src-status" id="phone-folder-status">Aucun dossier s&eacute;lectionn&eacute;</div>
+      </div>
+      <button class="btn-folder-pick" onclick="document.getElementById('folder-input-phone').click()">&#128193; S&eacute;lectionner&hellip;</button>
+      <input type="file" id="folder-input-phone" style="display:none" webkitdirectory multiple onchange="handleFolderSelect(this.files,'phone',0)">
+    </div>
+    <div id="sim-folders-container"></div>
+    <button class="folder-add-btn" onclick="addSIMFolder()">&#43; Ajouter un dossier SIM</button>
   </div>
   <div id="progress-bar-wrap">
     <div class="progress-label" id="progress-label">Analyse en cours&hellip;</div>
@@ -327,6 +390,83 @@
 </div>
 
 <div id="toast-container"></div>
+
+<!-- ── SCPJ Wizard Modal ────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="scpj-modal">
+  <div class="scpj-modal-box">
+    <div class="modal-header">
+      <span class="modal-title">&#128203; Rapport officiel SCPJ / UTAJ</span>
+      <button class="modal-close" onclick="closeSCPJModal()">&#10005;</button>
+    </div>
+    <div class="wiz-steps">
+      <div class="wiz-step active" id="wiz-tab-1">1&#65038; Informations g&eacute;n&eacute;rales</div>
+      <div class="wiz-step" id="wiz-tab-2">2&#65038; Mat&eacute;riel</div>
+      <div class="wiz-step" id="wiz-tab-3">3&#65038; Outils &amp; D&eacute;marche</div>
+      <div class="wiz-step" id="wiz-tab-4">4&#65038; Aper&ccedil;u &amp; Export</div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="wiz-pane active" id="wiz-pane-1">
+      <div class="scpj-stitle">Identification du dossier</div>
+      <div class="form-cols">
+        <div class="form-row"><label class="form-label">N&deg; de dossier</label><input type="text" class="form-input" id="scpj-dossier" placeholder="XXX-XXXX-2024"></div>
+        <div class="form-row"><label class="form-label">Date du rapport</label><input type="date" class="form-input" id="scpj-date-rapport"></div>
+      </div>
+      <div class="form-cols">
+        <div class="form-row"><label class="form-label">Ville</label><input type="text" class="form-input" id="scpj-ville" value="Rabat"></div>
+        <div class="form-row"><label class="form-label">Objet de l&apos;affaire</label><input type="text" class="form-input" id="scpj-objet" placeholder="Type d&apos;infraction"></div>
+      </div>
+      <div class="scpj-stitle">R&eacute;f&eacute;rences</div>
+      <div class="form-row"><label class="form-label">R&eacute;f&eacute;rence PV</label><input type="text" class="form-input" id="scpj-ref-pv" placeholder="PV n&deg; XX BJ XXXX du XX XX XXXX"></div>
+      <div class="form-cols">
+        <div class="form-row"><label class="form-label">N&deg; demande d&apos;expertise</label><input type="text" class="form-input" id="scpj-num-demande" placeholder="N&deg; XXX/2 BJ XXXXXX du XX XX XXXX"></div>
+        <div class="form-row"><label class="form-label">Date demande d&apos;expertise</label><input type="text" class="form-input" id="scpj-date-demande" placeholder="XX XX XXXX"></div>
+      </div>
+      <div class="scpj-stitle">Destinataire</div>
+      <div class="form-row"><label class="form-label">Destinataire 1</label><input type="text" class="form-input" id="scpj-dest1" placeholder="Commandant la R&eacute;gion&hellip;"></div>
+      <div class="form-row"><label class="form-label">Destinataire 2</label><input type="text" class="form-input" id="scpj-dest2" placeholder="Chef de la Brigade&hellip;"></div>
+      <div class="scpj-stitle">R&eacute;ception du scell&eacute;</div>
+      <div class="form-cols">
+        <div class="form-row"><label class="form-label">Date de r&eacute;ception</label><input type="date" class="form-input" id="scpj-date-reception"></div>
+        <div class="form-row"><label class="form-label">Heure de r&eacute;ception</label><input type="text" class="form-input" id="scpj-heure-reception" value="12H00"></div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="wiz-pane" id="wiz-pane-2">
+      <div class="scpj-stitle">Nombre d&apos;&eacute;l&eacute;ments saisis</div>
+      <div class="counter-row"><div class="counter-label">&#128241; Nombre de t&eacute;l&eacute;phones</div><button class="cnt-btn" onclick="changeCount('phones',-1)">&#8722;</button><div class="cnt-val" id="cnt-phones">1</div><button class="cnt-btn" onclick="changeCount('phones',1)">+</button></div>
+      <div class="counter-row"><div class="counter-label">&#128371; Nombre de cartes SIM</div><button class="cnt-btn" onclick="changeCount('sims',-1)">&#8722;</button><div class="cnt-val" id="cnt-sims">1</div><button class="cnt-btn" onclick="changeCount('sims',1)">+</button></div>
+      <div class="counter-row"><div class="counter-label">&#128190; Nombre de cartes m&eacute;moire</div><button class="cnt-btn" onclick="changeCount('cards',-1)">&#8722;</button><div class="cnt-val" id="cnt-cards">0</div><button class="cnt-btn" onclick="changeCount('cards',1)">+</button></div>
+      <div class="scpj-stitle">D&eacute;tails des appareils</div>
+      <div id="devices-container"></div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="wiz-pane" id="wiz-pane-3">
+      <div class="scpj-stitle">Outils de travail</div>
+      <div id="tools-list"></div>
+      <div class="scpj-stitle">D&eacute;marche (aper&ccedil;u auto-g&eacute;n&eacute;r&eacute;)</div>
+      <div class="demarche-box" id="demarche-preview"></div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="wiz-pane" id="wiz-pane-4">
+      <div class="scpj-stitle">R&eacute;capitulatif</div>
+      <div class="sum-grid" id="scpj-summary-grid"></div>
+      <div class="scpj-stitle">Exporter</div>
+      <div class="btn-export-wrap">
+        <button class="btn-scpj-rapport" onclick="generateSCPJReport()">&#128196; G&eacute;n&eacute;rer Rapport SCPJ (.docx)</button>
+        <button class="btn-scpj-annexes" onclick="generateSCPJAnnexes()">&#128206; G&eacute;n&eacute;rer Annexes SCPJ (.docx)</button>
+      </div>
+    </div>
+
+    <div class="wiz-nav">
+      <button class="btn-wiz-back" id="wiz-btn-back" onclick="scpjStep(-1)" style="visibility:hidden">&#8592; Pr&eacute;c&eacute;dent</button>
+      <button class="btn-wiz-next" id="wiz-btn-next" onclick="scpjStep(1)">Suivant &#8594;</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ── Constantes ────────────────────────────────────────────────────────────────
@@ -1055,6 +1195,643 @@ function showToast(msg, type='info') {
   t.textContent = (type==='success'?'\u2705':type==='error'?'\u274c':type==='warning'?'\u26a0\ufe0f':'\u2139\ufe0f')+' '+msg;
   c.appendChild(t);
   setTimeout(()=>{ t.style.transition='opacity 0.4s'; t.style.opacity='0'; setTimeout(()=>t.remove(),400); }, 3500);
+}
+
+// ── SCPJ State ────────────────────────────────────────────────────────────────
+const SCPJState = {
+  currentStep: 1,
+  counts: { phones: 1, sims: 1, cards: 0 },
+  folderData: { phone: null, sim: [] }
+};
+
+const UFED_FILE_MAP = {
+  'Report_ContactsSection': 'contacts',
+  'Report_CallLogsSection': 'calls',
+  'Report_SMSSection':      'sms',
+  'Report_MMSSection':      'mms',
+  'Report_ImagesSection':   'images',
+  'Report_VideoSection':    'video',
+  'Report_AudioSection':    'audio',
+  'Report_DocumentsSection':'documents'
+};
+
+const SCPJ_TOOLS = [
+  { id:'ufed4pc',   name:'UFED 4Pc',                   checked:true,  desc:"L'appareil UFED 4Pc (UNIVERSEL FORENSIC EXTRACTION DEVICE) est une solution de nouvelle g\u00e9n\u00e9ration d\u00e9di\u00e9e \u00e0 l'extraction et l'analyse forensique des appareils mobiles. Il permet des extractions logique, logique avanc\u00e9e, physique et d'images de syst\u00e8mes de fichiers." },
+  { id:'ufedtouch2',name:'Cellebrite UFED Touch2',      checked:false, desc:'Le Cellebrite UFED Touch2 est un dispositif portable d\'extraction forensique permettant l\'extraction compl\u00e8te de donn\u00e9es depuis des t\u00e9l\u00e9phones mobiles, smartphones et tablettes, supportant plus de 28\u202f000 profils d\'appareils.' },
+  { id:'ftk',       name:'FTK Imager',                  checked:false, desc:'FTK Imager (Forensic Toolkit Imager) est un outil d\'acquisition et de pr\u00e9visualisation forensique permettant de cr\u00e9er des images forensiques de disques et de supports num\u00e9riques tout en pr\u00e9servant l\'int\u00e9grit\u00e9 des preuves.' },
+  { id:'encase',    name:'EnCase Forensic',             checked:false, desc:'EnCase Forensic est une solution d\'investigation num\u00e9rique professionnelle permettant l\'acquisition, l\'analyse et la production de rapports sur des preuves num\u00e9riques conform\u00e9ment aux standards judiciaires internationaux.' },
+  { id:'xry',       name:'XRY',                         checked:false, desc:'XRY est une solution d\'extraction forensique mobile d\u00e9velopp\u00e9e par MSAB, permettant d\'extraire et d\'analyser les donn\u00e9es de t\u00e9l\u00e9phones mobiles, smartphones et appareils GPS en utilisant des m\u00e9thodes d\'extraction s\u00e9curis\u00e9es.' },
+  { id:'xways',     name:'X-Ways Forensics',            checked:false, desc:'X-Ways Forensics est un environnement de travail avanc\u00e9 pour les examinateurs informatiques, offrant des capacit\u00e9s d\'analyse de disques, de r\u00e9cup\u00e9ration de donn\u00e9es et d\'investigation num\u00e9rique approfondie.' },
+  { id:'oxygen',    name:'Oxygen Forensic\u00ae Detective', checked:false, desc:'Oxygen Forensic Detective est une suite d\'investigation num\u00e9rique compl\u00e8te permettant l\'extraction et l\'analyse de donn\u00e9es depuis des appareils mobiles, des services cloud et des m\u00e9dias num\u00e9riques.' },
+  { id:'eagle',     name:'EAGLE',                       checked:false, desc:'EAGLE est un syst\u00e8me int\u00e9gr\u00e9 d\'analyse et d\'investigation num\u00e9rique con\u00e7u pour les forces de l\'ordre, offrant des capacit\u00e9s d\'extraction et d\'analyse de donn\u00e9es mobiles dans un environnement s\u00e9curis\u00e9.' }
+];
+
+// ── Multi-folder loading ──────────────────────────────────────────────────────
+let _simFolderIdx = 0;
+
+function addSIMFolder() {
+  _simFolderIdx++;
+  const idx = _simFolderIdx;
+  const container = document.getElementById('sim-folders-container');
+  const div = document.createElement('div');
+  div.className = 'folder-src';
+  div.id = 'sim-folder-src-' + idx;
+  div.innerHTML =
+    '<div class="folder-src-icon">\uD83D\uDCB3</div>' +
+    '<div class="folder-src-info">' +
+      '<div class="folder-src-name">Dossier SIM ' + idx + '</div>' +
+      '<div class="folder-src-status" id="sim-folder-status-' + idx + '">Aucun dossier s\u00e9lectionn\u00e9</div>' +
+    '</div>' +
+    '<button class="btn-folder-pick" onclick="document.getElementById(\'folder-input-sim-' + idx + '\').click()">\uD83D\uDCC1 S\u00e9lectionner\u2026</button>' +
+    '<input type="file" id="folder-input-sim-' + idx + '" style="display:none" webkitdirectory multiple onchange="handleFolderSelect(this.files,\'sim\',' + idx + ')">';
+  container.appendChild(div);
+}
+
+function handleFolderSelect(files, type, idx) {
+  if (!files || files.length === 0) return;
+  const fileArr = Array.from(files);
+  const statusId = type === 'phone' ? 'phone-folder-status' : 'sim-folder-status-' + idx;
+  const statusEl = document.getElementById(statusId);
+  if (statusEl) { statusEl.textContent = '\u231B Analyse\u2026'; statusEl.className = 'folder-src-status'; }
+  showToast('Analyse du dossier en cours\u2026');
+  const detected = detectUFEDFiles(fileArr);
+  parseFolderFiles(detected, type, idx).then(() => {
+    const count = Object.keys(detected).length;
+    if (statusEl) { statusEl.textContent = '\u2705 ' + fileArr.length + ' fichiers (' + count + ' sections d\u00e9tect\u00e9es)'; statusEl.className = 'folder-src-status ok'; }
+  }).catch(err => {
+    if (statusEl) { statusEl.textContent = '\u274c Erreur : ' + err.message; statusEl.className = 'folder-src-status'; }
+    showToast('Erreur dossier : ' + err.message, 'error');
+  });
+}
+
+function detectUFEDFiles(files) {
+  const result = {};
+  const mainCandidates = [];
+  for (const file of files) {
+    const base = file.name.replace(/\.[^.]+$/, '');
+    let matched = false;
+    for (const [pattern, key] of Object.entries(UFED_FILE_MAP)) {
+      if (base === pattern || base.startsWith(pattern + '_') || base.startsWith(pattern + ' ')) {
+        result[key] = file; matched = true; break;
+      }
+    }
+    if (!matched && (base === 'Report' || base.toLowerCase() === 'report')) mainCandidates.push(file);
+  }
+  // Select the largest 'Report' file (Edge version ~21MB) for future main-report parsing
+  if (mainCandidates.length > 0) result['main'] = mainCandidates.reduce((a, b) => a.size > b.size ? a : b);
+  return result;
+}
+
+async function parseFolderFiles(fileMap, type, idx) {
+  const target = { contacts: [], calls: [], sms: [], deletedSms: [], images: 0, video: 0, audio: 0, meta: {} };
+  const jobs = [];
+  if (fileMap.contacts) jobs.push(readFileText(fileMap.contacts).then(h => parseContactsSectionHtml(h, target)));
+  if (fileMap.calls)    jobs.push(readFileText(fileMap.calls).then(h => parseCallsSectionHtml(h, target)));
+  if (fileMap.sms)      jobs.push(readFileText(fileMap.sms).then(h => parseSMSSectionHtml(h, target)));
+  if (fileMap.images)   jobs.push(readFileText(fileMap.images).then(h => { target.images = countDataRows(h); }));
+  if (fileMap.video)    jobs.push(readFileText(fileMap.video).then(h => { target.video  = countDataRows(h); }));
+  if (fileMap.audio)    jobs.push(readFileText(fileMap.audio).then(h => { target.audio  = countDataRows(h); }));
+  await Promise.all(jobs);
+  if (type === 'phone') {
+    SCPJState.folderData.phone = target;
+    if (target.contacts.length > 0) AppState.data.contacts = target.contacts.map(c => ({ name: c.name || c.index || '', phone: c.phone || '', email: '', created: '', modified: '', source: 'UFED', deleted: c.deleted }));
+    if (target.calls.length > 0)    AppState.data.calls    = target.calls;
+    if (target.sms.length + target.deletedSms.length > 0) AppState.data.sms = [...target.sms, ...target.deletedSms];
+  } else {
+    while (SCPJState.folderData.sim.length < idx) SCPJState.folderData.sim.push(null);
+    SCPJState.folderData.sim[idx - 1] = target;
+  }
+  document.getElementById('drop-zone').classList.add('hidden');
+  updateAllCounters(); renderAllSections(); saveToLocalStorage();
+  showSection('dashboard');
+  showToast((type === 'phone' ? 'Dossier t\u00e9l\u00e9phone' : 'Dossier SIM ' + idx) + ' analys\u00e9 !', 'success');
+}
+
+function readFileText(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = e => resolve(e.target.result);
+    r.onerror = () => reject(new Error('Lecture \u00e9chou\u00e9e : ' + file.name));
+    r.readAsText(file, 'UTF-8');
+  });
+}
+
+function countDataRows(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.querySelectorAll('tbody tr').length;
+}
+
+function parseContactsSectionHtml(html, target) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('table tr').forEach(row => {
+    const cells = row.querySelectorAll('td,th');
+    if (cells.length >= 2) {
+      const k = cells[0].textContent.trim().toLowerCase();
+      const v = cells[1].textContent.trim();
+      if (k.includes('iccid')) target.meta.iccid = v;
+      if (k.includes('imsi'))  target.meta.imsi  = v;
+      if (k.includes('spn'))   target.meta.spn   = v;
+      if (k.includes('ufed') && k.includes('version')) target.meta.ufedVersion = v;
+    }
+  });
+  const bodyText = doc.body ? doc.body.textContent : '';
+  const totM = bodyText.match(/Entr[e\u00e9]es totales\s*[:]\s*(\d+)/i) || bodyText.match(/Total[^:]*[:]\s*(\d+)/i);
+  if (totM) target.meta.contactsTotal = parseInt(totM[1]);
+  const hashM = bodyText.match(/SHA256\s*[:]\s*([A-Fa-f0-9]{64})/i);
+  if (hashM) target.meta.contactsHash = hashM[1];
+  doc.querySelectorAll('table').forEach(tbl => {
+    const txt = tbl.textContent.toLowerCase();
+    if (!txt.includes('nom') && !txt.includes('name') && !txt.includes('num')) return;
+    tbl.querySelectorAll('tbody tr').forEach(row => {
+      const cells = Array.from(row.querySelectorAll('td'));
+      if (cells.length >= 2) target.contacts.push({ index: getCT(cells,0), name: getCT(cells,1), phone: getCT(cells,2), email: getCT(cells,3)||'', deleted: isDelRow(row) });
+    });
+  });
+}
+
+function parseCallsSectionHtml(html, target) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('table tbody tr').forEach(row => {
+    const cells = Array.from(row.querySelectorAll('td'));
+    if (cells.length >= 2) {
+      const tl = getCT(cells,1).toLowerCase();
+      const type = tl.includes('entrant')||tl.includes('incoming')||tl.includes('received') ? 'incoming' :
+                   tl.includes('sortant')||tl.includes('outgoing')||tl.includes('dialed')   ? 'outgoing' :
+                   tl.includes('manqu')||tl.includes('missed')||tl.includes('absence')      ? 'missed'   : 'unknown';
+      target.calls.push({ datetime: getCT(cells,0), type, duration: getCT(cells,2), contact: getCT(cells,3), number: getCT(cells,4), source: 'UFED', deleted: isDelRow(row) });
+    }
+  });
+}
+
+function parseSMSSectionHtml(html, target) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const bodyText = doc.body ? doc.body.textContent : '';
+  const hashM = bodyText.match(/SHA256\s*[:]\s*([A-Fa-f0-9]{64})/i);
+  if (hashM) target.meta.smsHash = hashM[1];
+  let isDeletedSection = false;
+  doc.querySelectorAll('table').forEach(tbl => {
+    const prevSib = tbl.previousElementSibling;
+    if (prevSib && prevSib.textContent.toLowerCase().includes('supprim')) isDeletedSection = true;
+    tbl.querySelectorAll('tbody tr').forEach(row => {
+      const cells = Array.from(row.querySelectorAll('td'));
+      if (cells.length >= 2) {
+        const del = isDeletedSection || isDelRow(row);
+        const sms = { number: getCT(cells,0), name: getCT(cells,1), datetime: getCT(cells,2), smsc: getCT(cells,3), state: getCT(cells,4), index: getCT(cells,5), type: getCT(cells,6)||'SMS', text: getCT(cells,7), sender: getCT(cells,0), recipient: getCT(cells,0), content: getCT(cells,7), timestamp: getCT(cells,2), status: getCT(cells,4), deleted: del };
+        if (del) target.deletedSms.push(sms); else target.sms.push(sms);
+      }
+    });
+  });
+}
+
+// ── SCPJ Modal control ────────────────────────────────────────────────────────
+function openSCPJModal() {
+  const d = new Date();
+  const today = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  document.getElementById('scpj-date-rapport').value   = today;
+  document.getElementById('scpj-date-reception').value = today;
+  renderToolsList();
+  renderDevicesForms();
+  goToWizStep(1);
+  document.getElementById('scpj-modal').classList.add('visible');
+}
+function closeSCPJModal() { document.getElementById('scpj-modal').classList.remove('visible'); }
+document.getElementById('scpj-modal').addEventListener('click', function(e) { if (e.target === this) closeSCPJModal(); });
+
+function scpjStep(dir) { goToWizStep(SCPJState.currentStep + dir); }
+
+function goToWizStep(step) {
+  if (step < 1 || step > 4) return;
+  document.querySelectorAll('.wiz-pane').forEach((p, i) => p.classList.toggle('active', i + 1 === step));
+  document.querySelectorAll('.wiz-step').forEach((t, i) => {
+    t.classList.remove('active', 'done');
+    if (i + 1 === step) t.classList.add('active');
+    else if (i + 1 < step) t.classList.add('done');
+  });
+  SCPJState.currentStep = step;
+  const back = document.getElementById('wiz-btn-back');
+  const next = document.getElementById('wiz-btn-next');
+  back.style.visibility = step === 1 ? 'hidden' : 'visible';
+  if (step === 4) { next.textContent = 'Fermer'; next.onclick = closeSCPJModal; }
+  else { next.textContent = 'Suivant \u2192'; next.onclick = () => scpjStep(1); }
+  if (step === 3) updateDemarche();
+  if (step === 4) renderSCPJSummary();
+}
+
+function changeCount(type, delta) {
+  const max = { phones: 10, sims: 10, cards: 5 };
+  SCPJState.counts[type] = Math.max(0, Math.min(max[type], SCPJState.counts[type] + delta));
+  document.getElementById('cnt-' + type).textContent = SCPJState.counts[type];
+  renderDevicesForms();
+}
+
+function renderDevicesForms() {
+  const container = document.getElementById('devices-container');
+  if (!container) return;
+  let html = '';
+  for (let i = 0; i < SCPJState.counts.phones; i++) {
+    const sd = (SCPJState.folderData.sim[i] && SCPJState.folderData.sim[i].meta) || {};
+    const pd = SCPJState.folderData.phone;
+    html += '<div class="device-block">' +
+      '<div class="device-block-hdr" style="color:#E07B39;">\uD83D\uDCF1 T\u00e9l\u00e9phone ' + String(i+1).padStart(2,'0') + '</div>' +
+      '<div class="form-cols">' +
+        '<div class="form-row"><label class="form-label">Nom du propri\u00e9taire</label><input type="text" class="form-input" id="ph-' + i + '-owner" placeholder="Pr\u00e9nom NOM"></div>' +
+        '<div class="form-row"><label class="form-label">Marque</label><input type="text" class="form-input" id="ph-' + i + '-brand" value="' + escHtml(AppState.data.extraction.deviceBrand||'') + '" placeholder="Samsung"></div>' +
+      '</div>' +
+      '<div class="form-cols">' +
+        '<div class="form-row"><label class="form-label">Mod\u00e8le</label><input type="text" class="form-input" id="ph-' + i + '-model" value="' + escHtml(AppState.data.extraction.deviceModel||'') + '" placeholder="Galaxy S21"></div>' +
+        '<div class="form-row"><label class="form-label">IMEI (\u00e9tiquette)</label><input type="text" class="form-input" id="ph-' + i + '-imei-lbl" value="' + escHtml(AppState.data.extraction.imei||'') + '" placeholder="XXXXXXXXXXXXXXX"></div>' +
+      '</div>' +
+      '<div class="form-cols">' +
+        '<div class="form-row"><label class="form-label">IMEI (g\u00e9n\u00e9r\u00e9)</label><input type="text" class="form-input" id="ph-' + i + '-imei-gen" placeholder="XXXXXXXXXXXXXXX"></div>' +
+        '<div class="form-row"><label class="form-label">Mode d\'extraction</label><select class="form-input" id="ph-' + i + '-extract"><option>Logique</option><option>Logique avanc\u00e9e</option><option>Physique</option><option>Physique avanc\u00e9e</option><option>Chip Off</option><option>Manuel</option></select></div>' +
+      '</div>' +
+      '<div class="form-cols">' +
+        '<div class="form-row"><label class="form-label">Op\u00e9rateur SIM</label><input type="text" class="form-input" id="ph-' + i + '-operator" placeholder="Maroc Telecom"></div>' +
+        '<div class="form-row"><label class="form-label">N\u00b0 SIM</label><input type="text" class="form-input" id="ph-' + i + '-simnum" placeholder="+212XXXXXXXXX"></div>' +
+      '</div>' +
+      '<div class="form-cols">' +
+        '<div class="form-row"><label class="form-label">ICCID</label><input type="text" class="form-input" id="ph-' + i + '-iccid" value="' + escHtml(sd.iccid||'') + '" placeholder="XXXXXXXXXXXXXXXXXXXX"></div>' +
+        '<div class="form-row"><label class="form-label">IMSI</label><input type="text" class="form-input" id="ph-' + i + '-imsi" value="' + escHtml(sd.imsi||'') + '" placeholder="XXXXXXXXXXXXXXX"></div>' +
+      '</div>' +
+    '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function renderToolsList() {
+  const container = document.getElementById('tools-list');
+  if (!container) return;
+  container.innerHTML = SCPJ_TOOLS.map(t =>
+    '<div class="tool-item"><input type="checkbox" id="tool-' + t.id + '"' + (t.checked ? ' checked' : '') + ' onchange="updateDemarche()"><div class="tool-item-body"><div class="tool-item-name">' + escHtml(t.name) + '</div><div class="tool-item-desc">' + escHtml(t.desc) + '</div></div></div>'
+  ).join('');
+  updateDemarche();
+}
+
+function getSelectedTools() {
+  return SCPJ_TOOLS.filter(t => { const el = document.getElementById('tool-' + t.id); return el && el.checked; });
+}
+
+function updateDemarche() {
+  const preview = document.getElementById('demarche-preview');
+  if (!preview) return;
+  const tools = getSelectedTools();
+  if (!tools.length) { preview.textContent = 'S\u00e9lectionnez au moins un outil pour g\u00e9n\u00e9rer la d\u00e9marche.'; return; }
+  const toolNames = tools.map(t => t.name).join(', ');
+  let text = '';
+  for (let i = 0; i < SCPJState.counts.phones; i++) {
+    const ownerEl = document.getElementById('ph-' + i + '-owner');
+    const owner   = ownerEl && ownerEl.value ? ownerEl.value : 'le propri\u00e9taire ' + (i+1);
+    const extEl   = document.getElementById('ph-' + i + '-extract');
+    const extract = extEl ? extEl.value.toLowerCase() : 'logique';
+    text += 'Pour le t\u00e9l\u00e9phone ' + String(i+1).padStart(2,'0') + ' saisi chez ' + owner + ', nous avons proc\u00e9d\u00e9 \u00e0 une extraction ' + extract + ' en utilisant ' + toolNames + '. Les donn\u00e9es extraites ont \u00e9t\u00e9 analys\u00e9es et les r\u00e9sultats sont pr\u00e9sent\u00e9s ci-apr\u00e8s.\n\n';
+  }
+  preview.textContent = text.trim();
+}
+
+function renderSCPJSummary() {
+  const grid = document.getElementById('scpj-summary-grid');
+  if (!grid) return;
+  const pd = SCPJState.folderData.phone;
+  const contacts = pd ? pd.contacts.length : AppState.data.contacts.length;
+  const smsAct   = pd ? pd.sms.length        : AppState.data.sms.filter(s=>!s.deleted).length;
+  const smsDel   = pd ? pd.deletedSms.length  : AppState.data.sms.filter(s=>s.deleted).length;
+  const calls    = pd ? pd.calls : AppState.data.calls;
+  const incoming = calls.filter(c=>c.type==='incoming').length;
+  const outgoing = calls.filter(c=>c.type==='outgoing').length;
+  const missed   = calls.filter(c=>c.type==='missed').length;
+  const images   = pd ? pd.images : 0;
+  const video    = pd ? pd.video  : 0;
+  const audio    = pd ? pd.audio  : 0;
+  const items = [
+    {v:contacts,l:'Contacts'},{v:smsAct,l:'SMS (actifs)'},{v:smsDel,l:'SMS (supprim\u00e9s)'},
+    {v:incoming,l:'Appels entrants'},{v:outgoing,l:'Appels sortants'},{v:missed,l:'Appels manqu\u00e9s'},
+    {v:images,l:'Images'},{v:video,l:'Vid\u00e9os'},{v:audio,l:'Audio'}
+  ];
+  grid.innerHTML = items.map(({v,l}) => '<div class="sum-card"><div class="sv">' + v + '</div><div class="sl">' + escHtml(l) + '</div></div>').join('');
+}
+
+function collectSCPJInfo() {
+  const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const phones = [];
+  for (let i = 0; i < SCPJState.counts.phones; i++) {
+    phones.push({
+      owner:     g('ph-'+i+'-owner'),
+      brand:     g('ph-'+i+'-brand'),
+      model:     g('ph-'+i+'-model'),
+      imeiLabel: g('ph-'+i+'-imei-lbl'),
+      imeiGen:   g('ph-'+i+'-imei-gen'),
+      extraction:g('ph-'+i+'-extract') || 'Logique',
+      operator:  g('ph-'+i+'-operator'),
+      simNumber: g('ph-'+i+'-simnum'),
+      iccid:     g('ph-'+i+'-iccid'),
+      imsi:      g('ph-'+i+'-imsi')
+    });
+  }
+  return {
+    dossier:       g('scpj-dossier')        || 'XXX-XXXX-2024',
+    dateRapport:   g('scpj-date-rapport')   || new Date().toLocaleDateString('fr-FR'),
+    ville:         g('scpj-ville')          || 'Rabat',
+    objet:         g('scpj-objet')          || 'XXXX',
+    refPV:         g('scpj-ref-pv')         || 'PV n\u00b0 XX BJ XXXX du XX XX XXXX',
+    numDemande:    g('scpj-num-demande')    || 'N\u00b0 XXX/2 BJ XXXXXX du XX XX XXXX',
+    dateDemande:   g('scpj-date-demande')   || 'XX XX XXXX',
+    dest1:         g('scpj-dest1')          || 'Commandant la R\u00e9gion\u2026',
+    dest2:         g('scpj-dest2')          || 'Chef de la Brigade\u2026',
+    dateReception: g('scpj-date-reception') || 'XX/XX/2024',
+    heureReception:g('scpj-heure-reception')|| '12H00',
+    phones,
+    simCount:  SCPJState.counts.sims,
+    cardCount: SCPJState.counts.cards,
+    tools:     getSelectedTools()
+  };
+}
+
+// ── SCPJ Word Generation — Rapport ───────────────────────────────────────────
+async function generateSCPJReport() {
+  if (!window.docx) { showToast('Biblioth\u00e8que docx non charg\u00e9e.', 'error'); return; }
+  const info = collectSCPJInfo();
+  showToast('G\u00e9n\u00e9ration du Rapport SCPJ\u2026');
+  try {
+    const { Document, Paragraph, Table, TableRow, TableCell, TextRun,
+            AlignmentType, Header, Footer, PageNumber,
+            WidthType, BorderStyle, ShadingType, Packer, PageBreak } = window.docx;
+    const NAVY='1A2744', ORANGE='E07B39', BLUE='2E5494', WHITE='FFFFFF', GRAY='F4F6FA';
+
+    const pd = SCPJState.folderData.phone;
+    const contacts  = pd ? pd.contacts    : AppState.data.contacts;
+    const calls     = pd ? pd.calls       : AppState.data.calls;
+    const sms       = pd ? pd.sms         : AppState.data.sms.filter(s=>!s.deleted);
+    const delSms    = pd ? pd.deletedSms  : AppState.data.sms.filter(s=>s.deleted);
+    const images    = pd ? pd.images : 0;
+    const videos    = pd ? pd.video  : 0;
+    const audio     = pd ? pd.audio  : 0;
+    const incoming  = calls.filter(c=>c.type==='incoming').length;
+    const outgoing  = calls.filter(c=>c.type==='outgoing').length;
+    const missed    = calls.filter(c=>c.type==='missed').length;
+
+    function p(text, opts={}) {
+      return new Paragraph({ children:[new TextRun({text:text||'',...opts})], spacing:{after:120}, alignment: opts.align || AlignmentType.JUSTIFIED });
+    }
+    function pc(text, opts={}) {
+      return new Paragraph({ alignment:AlignmentType.CENTER, children:[new TextRun({text:text||'',...opts})], spacing:{after:120} });
+    }
+    function pb() { return new Paragraph({children:[new PageBreak()]}); }
+    function el() { return new Paragraph({children:[new TextRun({text:''})],spacing:{after:200}}); }
+    function bold(text, color, sz) { return new TextRun({text:text||'',bold:true,color:color||NAVY,size:sz||20}); }
+    function run(text,sz)  { return new TextRun({text:text||'',size:sz||20}); }
+
+    function infoTable(rows) {
+      return new Table({ width:{size:100,type:WidthType.PERCENTAGE}, rows: rows.map(([l,v]) =>
+        new TableRow({ children:[
+          new TableCell({ width:{size:35,type:WidthType.PERCENTAGE}, shading:{fill:GRAY,type:ShadingType.CLEAR,color:'auto'}, children:[new Paragraph({children:[new TextRun({text:String(l||''),bold:true,size:18})]})] }),
+          new TableCell({ width:{size:65,type:WidthType.PERCENTAGE}, children:[new Paragraph({children:[new TextRun({text:String(v||'N/A'),size:18})]})] })
+        ]})
+      )});
+    }
+
+    function coloredBlock(text, color) {
+      return new Table({ width:{size:100,type:WidthType.PERCENTAGE}, rows:[
+        new TableRow({ children:[new TableCell({
+          columnSpan:2, shading:{fill:color,type:ShadingType.CLEAR,color:'auto'},
+          children:[new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text,bold:true,color:WHITE,size:22})]})]
+        })]})
+      ]});
+    }
+
+    const children = [];
+
+    // ── Page de garde
+    children.push(p('Royaume du Maroc', {size:20,align:AlignmentType.JUSTIFIED}));
+    children.push(el());
+    children.push(pc('Gendarmerie Royale / Service central / De la police Judiciaire / Unit\u00e9 de Traitement / Et d\'Analyse Judiciaire', {bold:true,size:22,underline:{}}));
+    children.push(el());
+    children.push(p('Dossier n\u00b0 : ' + info.dossier + '.'));
+    children.push(p('A ' + info.ville + ' le : ' + info.dateRapport + '.'));
+    children.push(el());
+    children.push(pc('[LOGO UTAJ]', {bold:true,size:36,color:BLUE}));
+    children.push(el());
+    children.push(pc('Rapport d\'analyse num\u00e9rique', {bold:true,size:52,color:NAVY}));
+    children.push(el());
+    children.push(new Table({
+      width:{size:100,type:WidthType.PERCENTAGE},
+      borders:{top:{style:BorderStyle.SINGLE,size:6,color:BLUE},bottom:{style:BorderStyle.SINGLE,size:6,color:BLUE},left:{style:BorderStyle.SINGLE,size:6,color:BLUE},right:{style:BorderStyle.SINGLE,size:6,color:BLUE},insideH:{style:BorderStyle.SINGLE,size:2,color:BLUE},insideV:{style:BorderStyle.SINGLE,size:2,color:BLUE}},
+      rows:[
+        new TableRow({children:[new TableCell({width:{size:35,type:WidthType.PERCENTAGE},children:[new Paragraph({children:[bold('- Objet',NAVY,20)]})]}), new TableCell({width:{size:65,type:WidthType.PERCENTAGE},children:[new Paragraph({children:[run(info.objet+'.',20)]})]})]})
+       ,new TableRow({children:[new TableCell({children:[new Paragraph({children:[bold('- R\u00e9f\u00e9rence',NAVY,20)]})]}), new TableCell({children:[new Paragraph({children:[run(info.refPV,20)]})]})]})
+       ,new TableRow({children:[new TableCell({children:[new Paragraph({children:[bold('- Demande d\'expertise',NAVY,20)]})]}), new TableCell({children:[new Paragraph({children:[run(info.numDemande,20)]})]})]})
+       ,new TableRow({children:[new TableCell({children:[new Paragraph({children:[bold('- Destinataire',NAVY,20)]})]}), new TableCell({children:[new Paragraph({children:[run(info.dest1+(info.dest2?' / '+info.dest2:''),20)]})]})]})
+      ]
+    }));
+    children.push(pb());
+
+    // ── I. PRÉSENTATION
+    children.push(new Paragraph({children:[new TextRun({text:'I. PR\u00c9SENTATION',bold:true,color:NAVY,size:30})],spacing:{before:300,after:200}}));
+
+    children.push(new Paragraph({children:[bold('1. CONTEXTE',NAVY,22)],spacing:{before:200,after:100}}));
+    children.push(p('Dans le cadre d\'une affaire de ' + info.objet + ', nous avons proc\u00e9d\u00e9 \u00e0 l\'analyse forensique num\u00e9rique de ' + info.phones.length + ' t\u00e9l\u00e9phone(s) mobile(s) avec ' + info.simCount + ' carte(s) SIM et ' + info.cardCount + ' carte(s) m\u00e9moire saisi(s).'));
+
+    children.push(new Paragraph({children:[bold('2. R\u00c9CEPTION DU SCELL\u00c9',NAVY,22)],spacing:{before:200,after:100}}));
+    children.push(new Paragraph({children:[
+      run('Nous avons r\u00e9ceptionn\u00e9 le scell\u00e9 le '),
+      new TextRun({text:info.dateReception,bold:true,highlight:'yellow',size:20}),
+      run(' \u00e0 '),
+      new TextRun({text:info.heureReception,bold:true,highlight:'yellow',size:20}),
+      run('.')
+    ],spacing:{after:120}}));
+
+    children.push(new Paragraph({children:[bold('3. INVENTAIRE DU SCELL\u00c9',NAVY,22)],spacing:{before:200,after:100}}));
+    children.push(p('Le scell\u00e9 contient :'));
+    children.push(new Paragraph({children:[run('\u2022 (' + String(info.phones.length).padStart(2,'0') + ') T\u00e9l\u00e9phone(s) mobile(s)')],spacing:{after:60}}));
+    children.push(new Paragraph({children:[run('\u2022 (' + String(info.simCount).padStart(2,'0')  + ') Carte(s) SIM')],spacing:{after:60}}));
+    children.push(new Paragraph({children:[run('\u2022 (' + String(info.cardCount).padStart(2,'0') + ') Carte(s) m\u00e9moire')],spacing:{after:60}}));
+
+    children.push(new Paragraph({children:[bold('4. RENSEIGNEMENTS SUR LE MAT\u00c9RIEL EXPLOIT\u00c9',NAVY,22)],spacing:{before:200,after:100}}));
+    info.phones.forEach((ph, i) => {
+      children.push(coloredBlock('T\u00e9l\u00e9phone ' + String(i+1).padStart(2,'0'), ORANGE));
+      children.push(infoTable([['Marque',ph.brand],['Mod\u00e8le',ph.model],['IMEI \u00e9tiquette sur bo\u00eetier',ph.imeiLabel],['IMEI G\u00e9n\u00e9r\u00e9 par l\'appareil',ph.imeiGen]]));
+      if (ph.iccid || ph.imsi || ph.operator) {
+        children.push(coloredBlock('Carte SIM', BLUE));
+        children.push(infoTable([['Op\u00e9rateur',ph.operator],['N\u00b0 SIM',ph.simNumber],['ICCID',ph.iccid],['IMSI',ph.imsi]]));
+      }
+    });
+
+    children.push(new Paragraph({children:[bold('5. OBJECTIF DE L\'EXPERTISE',NAVY,22)],spacing:{before:200,after:100}}));
+    children.push(p('Suite \u00e0 la demande d\'expertise r\u00e9f\u00e9renc\u00e9e ' + info.numDemande + ' en date du ' + info.dateDemande + ', l\'objectif est de proc\u00e9der \u00e0 l\'extraction et l\'analyse forensique des donn\u00e9es contenues dans les appareils saisis, afin d\'identifier tout \u00e9l\u00e9ment pouvant \u00eatre utile \u00e0 l\'enqu\u00eate judiciaire.'));
+
+    children.push(new Paragraph({children:[bold('6. PROTOCOLE',NAVY,22)],spacing:{before:200,after:100}}));
+    children.push(new Paragraph({children:[new TextRun({text:'Outils de Travail :',bold:true,italics:true,size:20})],spacing:{after:80}}));
+    info.tools.forEach(t => {
+      children.push(new Paragraph({children:[new TextRun({text:'\u2022 ',size:18}),new TextRun({text:t.name+' \u2014 ',bold:true,italics:true,size:18}),new TextRun({text:t.desc,italics:true,size:18})],spacing:{after:80}}));
+    });
+    children.push(new Paragraph({children:[new TextRun({text:'D\u00e9marche :',bold:true,italics:true,size:20})],spacing:{before:160,after:80}}));
+    const toolNames = info.tools.map(t=>t.name).join(', ');
+    info.phones.forEach((ph, i) => {
+      children.push(p('Pour le t\u00e9l\u00e9phone ' + String(i+1).padStart(2,'0') + ' saisi chez ' + (ph.owner||'le propri\u00e9taire') + ', nous avons proc\u00e9d\u00e9 \u00e0 une extraction ' + ph.extraction.toLowerCase() + ' en utilisant ' + toolNames + '. Les donn\u00e9es extraites ont \u00e9t\u00e9 analys\u00e9es et les r\u00e9sultats sont pr\u00e9sent\u00e9s ci-apr\u00e8s.'));
+    });
+    children.push(pb());
+
+    // ── II. EXTRACTION ET ANALYSE
+    children.push(new Paragraph({children:[new TextRun({text:'II. EXTRACTION ET ANALYSE DES DONN\u00c9ES',bold:true,color:NAVY,size:30})],spacing:{before:300,after:200}}));
+    info.phones.forEach((ph, i) => {
+      children.push(new Paragraph({children:[new TextRun({text:'T\u00e9l\u00e9phone ' + String(i+1).padStart(2,'0') + ' \u2014 ' + ph.brand + ' ' + ph.model,bold:true,color:ORANGE,size:24})],spacing:{before:200,after:120}}));
+      children.push(new Paragraph({children:[bold('\u25a0 Contacts : ',NAVY),run(contacts.length > 0 ? 'Nous d\u00e9couvrons ' + contacts.length + ' contact(s).' : 'Aucun contact trouv\u00e9.')],spacing:{after:80}}));
+      children.push(new Paragraph({children:[bold('\u25a0 SMS : ',NAVY),run('Total : ' + (sms.length+delSms.length) + ' SMS. Actifs : ' + sms.length + '. Supprim\u00e9s : ' + delSms.length + '.')],spacing:{after:80}}));
+      children.push(new Paragraph({children:[bold('\u25a0 \u00c9changes t\u00e9l\u00e9phoniques : ',NAVY),run('Appels re\u00e7us : ' + incoming + ' | \u00c9mis : ' + outgoing + ' | En absence : ' + missed)],spacing:{after:80}}));
+      children.push(new Paragraph({children:[bold('\u25a0 Fichiers multim\u00e9dias : ',NAVY),run('Audio : ' + audio + ' | Images : ' + images + ' | Vid\u00e9os : ' + videos)],spacing:{after:80}}));
+      children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:'[Photos \u00e0 ins\u00e9rer]',italics:true,color:ORANGE,size:20})],spacing:{before:200,after:200}}));
+    });
+    children.push(pb());
+
+    // ── III. DESTINATION
+    children.push(new Paragraph({children:[new TextRun({text:'III. DESTINATION DONN\u00c9E AUX SUPPORTS',bold:true,color:NAVY,size:30})],spacing:{before:300,after:200}}));
+    children.push(p('\u00c0 l\'issue de l\'analyse forensique num\u00e9rique, l\'ensemble des supports num\u00e9riques saisis (t\u00e9l\u00e9phones mobiles, cartes SIM et cartes m\u00e9moire) sont restitu\u00e9s scell\u00e9s \u00e0 l\'unit\u00e9 requ\u00e9rante avec le pr\u00e9sent rapport d\'analyse.'));
+
+    const doc = new Document({
+      creator:'SCPJ/UTAJ', title:'Rapport d\'analyse num\u00e9rique \u2014 '+info.dossier, description:'G\u00e9n\u00e9r\u00e9 par UFED Builder 26',
+      sections:[{
+        headers:{ default: new Header({children:[new Paragraph({alignment:AlignmentType.LEFT,children:[new TextRun({text:'SCPJ/UTAJ/D\u00e9partement d\'analyse num\u00e9rique',bold:true,color:NAVY,size:16}),new TextRun({text:'          Dossier n\u00b0 '+info.dossier,color:'64748B',size:16})],border:{bottom:{style:BorderStyle.SINGLE,size:4,color:NAVY}}})]})},
+        footers:{ default: new Footer({children:[new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:'SCPJ/UTAJ   \u2014   Dossier n\u00b0 '+info.dossier+'   \u2014   Page ',size:16,color:'64748B'}),new TextRun({children:[PageNumber.CURRENT],size:16,color:'64748B'})],border:{top:{style:BorderStyle.SINGLE,size:4,color:NAVY}}})]})},
+        children
+      }]
+    });
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, 'RAPPORT_' + info.dossier.replace(/[^a-zA-Z0-9]/g,'_') + '.docx');
+    showToast('Rapport SCPJ g\u00e9n\u00e9r\u00e9 !', 'success');
+  } catch(err) { console.error('Erreur docx SCPJ:', err); showToast('Erreur : ' + err.message, 'error'); }
+}
+
+// ── SCPJ Word Generation — Annexes ───────────────────────────────────────────
+async function generateSCPJAnnexes() {
+  if (!window.docx) { showToast('Biblioth\u00e8que docx non charg\u00e9e.', 'error'); return; }
+  const info = collectSCPJInfo();
+  showToast('G\u00e9n\u00e9ration des Annexes SCPJ\u2026');
+  try {
+    const { Document, Paragraph, Table, TableRow, TableCell, TextRun,
+            AlignmentType, Header, Footer, PageNumber,
+            WidthType, BorderStyle, ShadingType, Packer, PageBreak } = window.docx;
+    const NAVY='1A2744', ORANGE='E07B39', BLUE='2E5494', WHITE='FFFFFF', GRAY='F4F6FA', GRAY2='D0D7E2';
+
+    const pd = SCPJState.folderData.phone;
+    const contacts = pd ? pd.contacts   : AppState.data.contacts;
+    const calls    = pd ? pd.calls      : AppState.data.calls;
+    const sms      = pd ? pd.sms        : AppState.data.sms.filter(s=>!s.deleted);
+    const delSms   = pd ? pd.deletedSms : AppState.data.sms.filter(s=>s.deleted);
+    const incoming = calls.filter(c=>c.type==='incoming').length;
+    const outgoing = calls.filter(c=>c.type==='outgoing').length;
+    const missed   = calls.filter(c=>c.type==='missed').length;
+
+    function pb()       { return new Paragraph({children:[new PageBreak()]}); }
+    function el()       { return new Paragraph({children:[new TextRun({text:''})],spacing:{after:200}}); }
+    function pc(text,opts={}) { return new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:text||'',...opts})],spacing:{after:120}}); }
+    function p(text,opts={}) { return new Paragraph({children:[new TextRun({text:text||'',...opts})],spacing:{after:100}}); }
+    function bold(txt,color,sz){ return new TextRun({text:txt||'',bold:true,color:color||NAVY,size:sz||20}); }
+    function run(txt,sz){ return new TextRun({text:txt||'',size:sz||20}); }
+
+    function dataTable(headers, rows) {
+      if (!rows || rows.length === 0) return p('Aucune donn\u00e9e.', {color:'94A3B8',size:18});
+      return new Table({
+        width:{size:100,type:WidthType.PERCENTAGE},
+        rows:[
+          new TableRow({tableHeader:true,children:headers.map(h=>new TableCell({shading:{fill:GRAY2,type:ShadingType.CLEAR,color:'auto'},children:[new Paragraph({children:[new TextRun({text:String(h),bold:true,size:16})]})]}))})
+         ,...rows.map((row,ri)=>new TableRow({children:row.map(cell=>new TableCell({shading:{fill:ri%2===0?WHITE:GRAY,type:ShadingType.CLEAR,color:'auto'},children:[new Paragraph({children:[new TextRun({text:String(cell||'\u2014'),size:15})]})]}))}))]
+      });
+    }
+
+    function coloredHdr(text, color) {
+      return new Table({width:{size:100,type:WidthType.PERCENTAGE},rows:[new TableRow({children:[new TableCell({columnSpan:2,shading:{fill:color,type:ShadingType.CLEAR,color:'auto'},children:[new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text,bold:true,color:WHITE,size:22})]})]})]})]}); 
+    }
+
+    function infoTable2(rows) {
+      return new Table({width:{size:100,type:WidthType.PERCENTAGE},rows:rows.map(([l,v])=>new TableRow({children:[
+        new TableCell({width:{size:40,type:WidthType.PERCENTAGE},shading:{fill:GRAY,type:ShadingType.CLEAR,color:'auto'},children:[new Paragraph({children:[new TextRun({text:String(l||''),bold:true,size:18})]})]}),
+        new TableCell({width:{size:60,type:WidthType.PERCENTAGE},children:[new Paragraph({children:[new TextRun({text:String(v||'N/A'),size:18})]})]})
+      ]}))});
+    }
+
+    const children = [];
+
+    // ── Annexe cover page
+    children.push(el()); children.push(el());
+    children.push(pc('[LOGO UTAJ]', {bold:true,size:36,color:BLUE}));
+    children.push(el());
+    children.push(pc('ANNEXES', {bold:true,size:52,color:NAVY}));
+    children.push(el());
+    children.push(pc('Dossier n\u00b0 ' + info.dossier, {size:26,color:NAVY}));
+    children.push(pb());
+
+    // ── Per-device annexes
+    info.phones.forEach((ph, i) => {
+      children.push(coloredHdr('T\u00e9l\u00e9phone saisi chez le nomm\u00e9 ' + (ph.owner || 'XXXXXXXX'), ORANGE));
+      children.push(infoTable2([['Marque',ph.brand],['Mod\u00e8le',ph.model],['IMEI \u00e9tiquette sur bo\u00eetier',ph.imeiLabel],['IMEI G\u00e9n\u00e9r\u00e9 par l\'appareil',ph.imeiGen],['Op\u00e9rateur',ph.operator],['N\u00b0 SIM',ph.simNumber],['ICCID',ph.iccid],['IMSI',ph.imsi]]));
+      children.push(pb());
+
+      children.push(pc('Annexe -' + (i+1) + '-', {bold:true,color:BLUE,size:36}));
+      children.push(el());
+
+      // ■ Caractéristiques techniques
+      children.push(new Paragraph({children:[bold('\u25a0 Caract\u00e9ristiques techniques :',NAVY,22)],spacing:{before:200,after:120}}));
+      children.push(infoTable2([['Marque',ph.brand],['Mod\u00e8le',ph.model],['IMEI (\u00e9tiquette)',ph.imeiLabel],['IMEI (g\u00e9n\u00e9r\u00e9)',ph.imeiGen],['Mode d\'extraction',ph.extraction]]));
+      children.push(el());
+
+      // ■ Contacts
+      children.push(new Paragraph({children:[bold('\u25a0 Contacts du t\u00e9l\u00e9phone (R\u00e9pertoire) :',NAVY,22)],spacing:{before:200,after:80}}));
+      if (pd && pd.meta && pd.meta.contactsHash) children.push(p('SHA256 : ' + pd.meta.contactsHash, {size:15,color:'64748B'}));
+      children.push(dataTable(['#','Nom (Index)','Num\u00e9ro'], contacts.map((c,ci)=>[ci+1,c.name||c.index||'\u2014',c.phone||'\u2014'])));
+      children.push(el());
+
+      // ■ SMS
+      children.push(new Paragraph({children:[bold('\u25a0 Messages du t\u00e9l\u00e9phone (SMS) :',NAVY,22)],spacing:{before:200,after:80}}));
+      if (pd && pd.meta && pd.meta.smsHash) children.push(p('SHA256 : ' + pd.meta.smsHash, {size:15,color:'64748B'}));
+      children.push(dataTable(['#','Num\u00e9ro','Nom','Date & Heure','SMSC','\u00c9tat','Index','Type','Texte'], sms.map((s,si)=>[si+1,s.number||s.sender||'\u2014',s.name||'\u2014',s.datetime||s.timestamp||'\u2014',s.smsc||'\u2014',s.state||s.status||'\u2014',s.index||'\u2014',s.type||'SMS',s.text||s.content||'\u2014'])));
+      children.push(new Paragraph({children:[bold('SMS supprim\u00e9s :','B45309',20)],spacing:{before:160,after:80}}));
+      children.push(dataTable(['#','Num\u00e9ro','Nom','Date & Heure','SMSC','\u00c9tat','Index','Type','Texte'], delSms.map((s,si)=>[si+1,s.number||s.sender||'\u2014',s.name||'\u2014',s.datetime||s.timestamp||'\u2014',s.smsc||'\u2014',s.state||s.status||'\u2014',s.index||'\u2014',s.type||'SMS',s.text||s.content||'\u2014'])));
+      children.push(el());
+
+      // ■ Journal d'appels
+      children.push(new Paragraph({children:[bold('\u25a0 Journal d\'appels du t\u00e9l\u00e9phone :',NAVY,22)],spacing:{before:200,after:80}}));
+      children.push(new Paragraph({children:[new TextRun({text:'\u27a4 Appels entrants : ',bold:true,size:19}),run(String(incoming)),new TextRun({text:'   \u27a4 Appels sortants : ',bold:true,size:19}),run(String(outgoing)),new TextRun({text:'   \u27a4 Appels en absence : ',bold:true,size:19}),run(String(missed))],spacing:{after:100}}));
+      children.push(dataTable(['#','Date/Heure','Type','Dur\u00e9e','Contact','Num\u00e9ro'], calls.map((c,ci)=>[ci+1,c.datetime||'\u2014',c.type||'\u2014',c.duration||'\u2014',c.contact||'\u2014',c.number||'\u2014'])));
+
+      if (i < info.phones.length - 1) children.push(pb());
+    });
+
+    // ── SIM annexes
+    SCPJState.folderData.sim.forEach((sd, si) => {
+      if (!sd) return;
+      children.push(pb());
+      children.push(pc('Annexe -' + (info.phones.length + si + 1) + '-  Carte \u00e0 puce / SIM ' + (si+1), {bold:true,color:BLUE,size:28}));
+      children.push(el());
+      children.push(new Paragraph({children:[bold('\u25a0 Caract\u00e9ristiques techniques :',NAVY,22)],spacing:{before:200,after:120}}));
+      children.push(infoTable2([['ICCID',sd.meta.iccid],['IMSI',sd.meta.imsi],['SPN',sd.meta.spn],['Version UFED',sd.meta.ufedVersion]]));
+      children.push(el());
+      children.push(new Paragraph({children:[bold('\u25a0 Contacts de la carte \u00e0 puce (R\u00e9pertoire) :',NAVY,22)],spacing:{before:200,after:80}}));
+      children.push(dataTable(['#','Nom (Index)','Num\u00e9ro'], (sd.contacts||[]).map((c,ci)=>[ci+1,c.name||'\u2014',c.phone||'\u2014'])));
+      children.push(el());
+      children.push(new Paragraph({children:[bold('\u25a0 Messages de la carte \u00e0 puce (SMS) :',NAVY,22)],spacing:{before:200,after:80}}));
+      children.push(dataTable(['#','Num\u00e9ro','Nom','Date & Heure','SMSC','\u00c9tat','Index','Type','Texte'], (sd.sms||[]).map((s,i2)=>[i2+1,s.number||'\u2014',s.name||'\u2014',s.datetime||'\u2014',s.smsc||'\u2014',s.state||'\u2014',s.index||'\u2014',s.type||'SMS',s.text||'\u2014'])));
+      children.push(new Paragraph({children:[bold('SMS supprim\u00e9s (SIM) :','B45309',20)],spacing:{before:160,after:80}}));
+      children.push(dataTable(['#','Num\u00e9ro','Nom','Date & Heure','SMSC','\u00c9tat','Index','Type','Texte'], (sd.deletedSms||[]).map((s,i2)=>[i2+1,s.number||'\u2014',s.name||'\u2014',s.datetime||'\u2014',s.smsc||'\u2014',s.state||'\u2014',s.index||'\u2014',s.type||'SMS',s.text||'\u2014'])));
+      children.push(el());
+      const si_in = (sd.calls||[]).filter(c=>c.type==='incoming').length;
+      const si_out= (sd.calls||[]).filter(c=>c.type==='outgoing').length;
+      const si_mis= (sd.calls||[]).filter(c=>c.type==='missed').length;
+      children.push(new Paragraph({children:[bold('\u25a0 Journal d\'appels de la carte \u00e0 puce :',NAVY,22)],spacing:{before:200,after:80}}));
+      children.push(new Paragraph({children:[new TextRun({text:'\u27a4 Entrants : ',bold:true,size:19}),run(String(si_in)),new TextRun({text:'   \u27a4 Sortants : ',bold:true,size:19}),run(String(si_out)),new TextRun({text:'   \u27a4 En absence : ',bold:true,size:19}),run(String(si_mis))],spacing:{after:100}}));
+      children.push(dataTable(['#','Date/Heure','Type','Dur\u00e9e','Contact','Num\u00e9ro'], (sd.calls||[]).map((c,ci)=>[ci+1,c.datetime||'\u2014',c.type||'\u2014',c.duration||'\u2014',c.contact||'\u2014',c.number||'\u2014'])));
+    });
+
+    const doc = new Document({
+      creator:'SCPJ/UTAJ', title:'Annexes \u2014 '+info.dossier, description:'G\u00e9n\u00e9r\u00e9 par UFED Builder 26',
+      sections:[{
+        headers:{ default: new Header({children:[new Paragraph({alignment:AlignmentType.LEFT,children:[new TextRun({text:'SCPJ/UTAJ \u2014 ANNEXES',bold:true,color:NAVY,size:16}),new TextRun({text:'          Dossier n\u00b0 '+info.dossier,color:'64748B',size:16})],border:{bottom:{style:BorderStyle.SINGLE,size:4,color:NAVY}}})]})},
+        footers:{ default: new Footer({children:[new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:'Dossier n\u00b0 '+info.dossier+'   \u2014   Page ',size:16,color:'64748B'}),new TextRun({children:[PageNumber.CURRENT],size:16,color:'64748B'})],border:{top:{style:BorderStyle.SINGLE,size:4,color:NAVY}}})]})},
+        children
+      }]
+    });
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, 'ANNEXES_' + info.dossier.replace(/[^a-zA-Z0-9]/g,'_') + '.docx');
+    showToast('Annexes SCPJ g\u00e9n\u00e9r\u00e9es !', 'success');
+  } catch(err) { console.error('Erreur docx Annexes:', err); showToast('Erreur : ' + err.message, 'error'); }
 }
 </script>
 </body>
